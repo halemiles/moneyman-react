@@ -16,8 +16,8 @@ COPY . .
 # Build app
 RUN npm run build
 
-# Expose port 3000
-EXPOSE 3000
+# Expose port 3001
+EXPOSE 3001
 
 # Start app
 CMD ["npm", "start"]
