@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Summary from './Summary';
 
 export default function Grid() {
   const [planDates, setPlanDates] = useState([]);
@@ -16,6 +17,7 @@ export default function Grid() {
 
   return (
     <div>
+      <Summary planDates={planDates} />
       <h2>Plan Dates</h2>
       <table border="">
         <thead>
