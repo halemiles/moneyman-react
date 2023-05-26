@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Summary from './Summary';
+import Table from 'react-bootstrap/Table';
+import './Table.css'
 
 export default function Grid() {
   const [planDates, setPlanDates] = useState([]);
@@ -19,7 +21,7 @@ export default function Grid() {
     <div>
       <Summary planDates={planDates} />
       <h2>Plan Dates</h2>
-      <table border="">
+      <Table dark className="white-table">
         <thead>
           <tr>
             <th>Transaction Name</th>
@@ -36,7 +38,7 @@ export default function Grid() {
             </tr>
           ))}
         </tbody>
-      </table>
+      </Table>
       <h2>Amount Due: ${amountDue}</h2>
     </div>
   );
