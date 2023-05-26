@@ -7,14 +7,15 @@ WORKDIR /app
 # Copy package.json and package-lock.json
 #COPY package*.json ./
 
-# Install dependencies
-RUN npm install
 
 # Copy app source code
 COPY . .
 
+# Install dependencies
+RUN npm install
+
 # Build app
-RUN npm run build
+#RUN npm run build
 
 # Expose port 3002
 EXPOSE 3002
