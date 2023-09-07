@@ -6,20 +6,20 @@ import Grid from '../Grid';
 
  test('Grid should contain Transaction as a column', () => {
     render(<Grid />);
-    const linkElement = screen.getByText(/Transaction/i);
+    const linkElement = screen.getByText("Transaction Name");
     expect(linkElement).toBeInTheDocument();    
  });
 
-// test('Grid should contain Amount as a column', () => {
-//     render(<Grid />);
-//     const linkElement = screen.getByText(/Amount/i);
-//     expect(linkElement).toBeInTheDocument();
-// });
+test('Grid should contain Amount as a column', () => {
+    render(<Grid />);
+    const linkElement = screen.getByText("Amount");
+    expect(linkElement).toBeInTheDocument();
+});
 
-// test('Grid should contain Date as a column', () => {
-//     render(<Grid />);
-//     const linkElement = screen.getByText(/Date/i);
-//     expect(linkElement).toBeInTheDocument();
-// });
+test('Grid should contain Date as a column', () => {
+    render(<Grid />);
+    const linkElement = screen.getByText("Date");
+    expect(linkElement).toBeInTheDocument();
+});
 
 
