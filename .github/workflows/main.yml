@@ -3,7 +3,10 @@ name: Run npm tests
 on:
   push:
     branches:
-      - main # Change this to the default branch of your repository
+      - master # Change this to the default branch of your repository
+      - develop
+      - ci
+      - feature/*
 
 jobs:
   build:
