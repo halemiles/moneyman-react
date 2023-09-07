@@ -25,6 +25,8 @@ export default function Summary(props) {
       setActual(e.target.value);
     };
 
+
+
   return (
     <div>
       <h2>Summary</h2>
