@@ -9,10 +9,7 @@ import Col from 'react-bootstrap/Col';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-// refresh component to regather data
-
 export default function Controls(props) {
-    //const [url, setUrl] = useState("http://192.168.0.195:8600/dtp/current");
     const handleRefresh = (url) => {
         fetch(url)
         .then((res) => res.json())
@@ -27,12 +24,10 @@ export default function Controls(props) {
     };
 
     const gatherCurrentOnClick = () => {
-        //setUrl("http://192.168.0.195:8600/dtp/current");
         handleRefresh("http://192.168.0.195:8600/dtp/current");
     };
 
     const gatherFullOnClick = () => {
-        //setUrl("http://192.168.0.195:8600/dtp/full");
         handleRefresh("http://192.168.0.195:8600/dtp/full");
     };
 
