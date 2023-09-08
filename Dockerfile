@@ -5,16 +5,17 @@ FROM node:16-alpine
 WORKDIR /app
 
 # Copy package.json and package-lock.json
-COPY package*.json ./
+#COPY package*.json ./
+
+
+# Copy app source code
+COPY . .
 
 # Install dependencies
 RUN npm install
 
-# Copy app source code
-COPY src .
-
 # Build app
-RUN npm run build
+#RUN npm run build
 
 # Expose port 3002
 EXPOSE 3002
