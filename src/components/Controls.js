@@ -1,11 +1,8 @@
-// create a button to refresh data
-
-//Path: src/components/Controls.js
-import React, { useState, useEffect } from "react";
 import Form from 'react-bootstrap/Form';
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -34,10 +31,10 @@ export default function Controls(props) {
     return (
         <div>
             <Form.Group controlId="refresh" as={Row} className="mb-3">
-                <Col sm="2">
-                    <button onClick={refreshDataOnClick}>Refresh</button>
-                    <button onClick={gatherFullOnClick}>Full</button>
-                    <button onClick={gatherCurrentOnClick}>Current</button>
+                <Col>                    
+                    <Button className="me-2" variant={"success"} onClick={refreshDataOnClick}>Refresh</Button>
+                    <Button className="me-2" variant={"secondary"} onClick={gatherFullOnClick}>Full</Button>
+                    <Button className="me-2" variant={"secondary"} onClick={gatherCurrentOnClick}>From today</Button>
                 </Col>
             </Form.Group>
         </div>
