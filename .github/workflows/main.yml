@@ -5,8 +5,12 @@ on:
     branches:
       - master # Change this to the default branch of your repository
       - develop
-      - ci
+      - ci/*
+  pull_request:
+    branches:
       - feature/*
+      - bugfix/*
+      - ci/*
 
 jobs:
   build:
