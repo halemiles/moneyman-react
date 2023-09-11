@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import Form from 'react-bootstrap/Form';
 
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-
+import { InputGroup } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function Summary(props) {
@@ -33,10 +32,10 @@ export default function Summary(props) {
       <div>
             <Form>
               <Form.Group controlId="actualValue" as={Row} className="mb-3">
-                <Form.Label column sm="2">Actual:</Form.Label>
-                <Col sm="8">
-                  <Form.Control type="number" step="0.01" value={actual} onChange={handleActualChange} />
-                </Col>
+                <InputGroup>
+                  <InputGroup.Text>Current balance</InputGroup.Text>
+                  <Form.Control aria-label="Current balance" type="number" step="1" value={actual}   onChange={handleActualChange}/>
+                </InputGroup>
             </Form.Group>
             </Form>
         <p>Due: {due}</p>

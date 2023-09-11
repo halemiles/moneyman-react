@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Summary should match snapshot 1`] = `
+<div>
+  <div>
+    <h2>
+      Summary
+    </h2>
+    <div>
+      <form
+        class=""
+      >
+        <div
+          class="mb-3 row"
+        >
+          <label
+            class="form-label col-form-label col-sm-2"
+            for="actualValue"
+          >
+            Actual:
+          </label>
+          <div
+            class="col-sm-8"
+          >
+            <input
+              class="form-control"
+              id="actualValue"
+              step="0.01"
+              type="number"
+              value="2200"
+            />
+          </div>
+        </div>
+      </form>
+      <p>
+        Due: 
+        100.00
+      </p>
+      <p>
+        Remaining: 
+        2100.00
+      </p>
+    </div>
+  </div>
+</div>
+`;
