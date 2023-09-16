@@ -5,22 +5,24 @@ import Controls from './Controls';
 import './Table.css'
 import { v4 as uuidv4 } from 'uuid';
 
-
+const serverUrl = process.env.REACT_APP_MONEYMAN_SERVER_URL;
 export default function Grid() {
   const [planDates, setPlanDates] = useState([]);
   const [amountDue, setAmountDue] = useState(0);
 
   useEffect(() => {
-    fetch("http://192.168.0.195:8600/dtp/current")
+    
+    fetch(serverUrl + "/dtp/current")
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
         setPlanDates(data.planDates);
         setAmountDue(data.amountDue);
       });
-  }, []);
+  }, [serverUrl]);
 
   const receiveDataFromChild = (data) => {
+    console.log(serverUrl);
     setPlanDates(data);
   };
 
