@@ -15,7 +15,6 @@ export default function Grid() {
     fetch(serverUrl + "/dtp/current")
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setPlanDates(data.planDates);
         setAmountDue(data.amountDue);
       });
@@ -31,7 +30,7 @@ export default function Grid() {
       <h2>Plan Dates</h2>
 
       <Controls sendDataToParent={receiveDataFromChild} />
-      <Table dark className="white-table">
+      <Table className="white-table">
         <thead>
           <tr>
             <th>Transaction Name</th>

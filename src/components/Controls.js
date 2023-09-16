@@ -11,7 +11,6 @@ export default function Controls(props) {
         fetch(url)
         .then((res) => res.json())
         .then((data) => {
-            console.log(data);
             props.sendDataToParent(data.planDates);
         });
     };

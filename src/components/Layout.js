@@ -3,9 +3,12 @@ import Grid from "./Grid";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Transactions from "./Transactions";
 import Navigation from "./Navigation";
+import TransactionEdit from "./transaction/TransactionEdit";
 import "../App.css";
 
 function Layout() {
+  
+
   return (
     <div>
       <div className="ui center aligned container">
@@ -19,9 +22,13 @@ function Layout() {
               </Route>
               <Route path="/transaction">
                 <Transactions />
+                
               </Route>
               <Route path="/about">
                 <About />
+              </Route>
+              <Route path="/transactionedit/:id">
+                <TransactionEdit />
               </Route>
             </Switch>
           </BrowserRouter>

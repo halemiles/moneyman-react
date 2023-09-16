@@ -10,7 +10,6 @@ function Transactions(){
         fetch(serverUrl + "/transaction")
             .then((res) => res.json())
             .then((data) => {
-                console.log(data);
                 setTransactions(data);
             });
     }, [serverUrl]);
@@ -19,7 +18,7 @@ function Transactions(){
     return(
         <div>
             <h1>Transactions</h1>
-            <Table dark className="white-table">
+            <Table className="white-table">
                 <thead>
                 <tr>
                     <th>Transaction Name</th>
@@ -34,7 +33,7 @@ function Transactions(){
                         <td>{transaction.name}</td>
                         <td>{transaction.amount}</td>
                         <td>{new Date(transaction.date).toLocaleDateString()}</td>
-                        <td><a href={"/transaction/edit/" + transaction.id}>Edit</a></td>
+                        <td><a href={"/transactionedit/" + transaction.id}>Edit</a></td>
                     </tr>
                 ))}
                 </tbody>
