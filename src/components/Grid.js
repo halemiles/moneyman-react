@@ -22,7 +22,6 @@ export default function Grid() {
   }, [serverUrl]);
 
   const receiveDataFromChild = (data) => {
-    console.log(serverUrl);
     setPlanDates(data);
   };
 
