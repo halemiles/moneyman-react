@@ -2,7 +2,7 @@ import React from "react";
 import Grid from "./Grid";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Transactions from "./Transactions";
-import Navigation from "./Navigation";
+import Header from "./Header";
 import TransactionEdit from "./transaction/TransactionEdit";
 import "../App.css";
 
@@ -12,9 +12,9 @@ function Layout() {
   return (
     <div>
       <div className="ui center aligned container">
-        <div className="wrapper">
-          <h1>Money Manager</h1>
-          <Navigation />
+        <div >
+          
+          <Header />
           <BrowserRouter>
             <Switch>
               <Route path="/home">

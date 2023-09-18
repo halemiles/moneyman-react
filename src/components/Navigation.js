@@ -1,21 +1,17 @@
+import Nav from 'react-bootstrap/Nav';
+
 function Navigation()
 {
-    return (
-        <div>
-            <nav>
-                <ul>
-                    <li>
-                        <a href="/home">Home</a>
-                    </li>
-                    <li>
-                        <a href="/transaction">Transactions</a>
-                    </li>
-                    <li>
-                        <a href="/about">About</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+    return (        
+        <Nav defaultActiveKey="/home" as="ul">
+            <Nav.Item as="li">
+                <Nav.Link href="/home">Home</Nav.Link>
+            </Nav.Item>
+
+            <Nav.Item as="li">
+                <Nav.Link eventKey="/transactions">Transactions</Nav.Link>
+            </Nav.Item>
+        </Nav>
     )
 }
 
