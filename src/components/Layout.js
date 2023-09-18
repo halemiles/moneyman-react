@@ -20,7 +20,7 @@ function Layout() {
               <Route path="/home">
                 <Grid />
               </Route>
-              <Route path="/transaction">
+              <Route path="/transactions">
                 <Transactions />
                 
               </Route>
