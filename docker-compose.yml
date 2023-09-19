@@ -1,0 +1,10 @@
+---
+version: '3.8'
+  services:
+    moneyman-react:
+      container_name: moneyman-react
+      build:
+        context: ./moneyman-react
+        dockerfile: Dockerfile
+      ports:
+        - "3000:3000"
