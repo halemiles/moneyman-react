@@ -1,0 +1,8 @@
+kind: pipeline
+name: default
+steps:
+  - name: install_deps
+    image: node:11.6.0-alpine
+    commands:
+      - cd src
+      - npm i
