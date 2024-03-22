@@ -32,7 +32,7 @@ function Transactions(){
                     <tr key={uuidv4()}>
                         <td>{transaction.name}</td>
                         <td>{transaction.amount}</td>
-                        <td>{new Date(transaction.date).toLocaleDateString()}</td>
+                        <td>{new Date(transaction.startDate).toLocaleDateString()}</td>
                         <td><a href={"/transactionedit/" + transaction.id}>Edit</a></td>
                     </tr>
                 ))}

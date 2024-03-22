@@ -5,26 +5,28 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+const serverUrl = process.env.REACT_APP_MONEYMAN_SERVER_URL;
 export default function Controls(props) {
     const handleRefresh = (url) => {
         fetch(url)
         .then((res) => res.json())
         .then((data) => {
             props.sendDataToParent(data.planDates);
-        });
+        })
+        .catch((error) => console.log(error));
+
     };
 
     const refreshDataOnClick = () => {
-        handleRefresh("http://192.168.0.195:8600/dtp/current");
+        handleRefresh(`${serverUrl}/dtp/current`);
     };
 
     const gatherCurrentOnClick = () => {
-        handleRefresh("http://192.168.0.195:8600/dtp/current");
+        handleRefresh(`${serverUrl}/dtp/current`);
     };
 
     const gatherFullOnClick = () => {
-        handleRefresh("http://192.168.0.195:8600/dtp/full");
+        handleRefresh(`${serverUrl}/dtp/full`);
     };
 
     return (

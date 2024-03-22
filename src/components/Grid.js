@@ -15,8 +15,8 @@ export default function Grid() {
     fetch(serverUrl + "/dtp/current")
       .then((res) => res.json())
       .then((data) => {
-        setPlanDates(data.planDates);
-        setAmountDue(data.amountDue);
+        setPlanDates(data.payload.planDates);
+        setAmountDue(data.payload.amountDue);
       });
   }, [serverUrl]);
 
