@@ -48,12 +48,11 @@ export default function Grid() {
             <tr key={uuidv4()}>
               <td>{date.transactionName}</td>
               <td>{date.amount}</td>
-              {/* <td>{this.formatDate(date.startDate)}</td> */}
+              <td>{formatDate(date.date)}</td>
             </tr>
           ))}
         </tbody>
       </Table>
-      <h2>Amount Due: ${amountDue}</h2>
     </div>
   );
 }

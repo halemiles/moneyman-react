@@ -11,6 +11,10 @@ export default function Controls(props) {
         fetch(url)
         .then((res) => res.json())
         .then((data) => {
+            if(data.payload){
+            props.sendDataToParent(data.payload.planDates);
+            }
+            else
             props.sendDataToParent(data.planDates);
         });
     };
