@@ -11,17 +11,22 @@ export default function Grid() {
   const [amountDue, setAmountDue] = useState(0);
 
   useEffect(() => {
-    
+
     fetch(serverUrl + "/dtp/current")
       .then((res) => res.json())
       .then((data) => {
-        setPlanDates(data.planDates);
-        setAmountDue(data.amountDue);
+        setPlanDates(data.payload.planDates);
+        setAmountDue(data.payload.amountDue);
       });
   }, [serverUrl]);
 
   const receiveDataFromChild = (data) => {
     setPlanDates(data);
+  };
+
+  const formatDate = (date) => {
+    console.log(date);
+    return new Date(date).toLocaleDateString();
   };
 
   return (
@@ -43,7 +48,7 @@ export default function Grid() {
             <tr key={uuidv4()}>
               <td>{date.transactionName}</td>
               <td>{date.amount}</td>
-              <td>{new Date(date.date).toLocaleDateString()}</td>
+              {/* <td>{this.formatDate(date.startDate)}</td> */}
             </tr>
           ))}
         </tbody>
