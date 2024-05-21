@@ -5,26 +5,31 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {handlePostRefresh} from '../data/DutTillPayday.ts';
 
 export default function Controls(props) {
-    const handleRefresh = (url) => {
-        fetch(url)
-        .then((res) => res.json())
-        .then((data) => {
-            props.sendDataToParent(data.planDates);
-        });
-    };
+
+
+
+
+    // const handleRefresh = (url) => {
+    //     fetch(url)
+    //     .then((res) => res.json())
+    //     .then((data) => {
+    //         props.sendDataToParent(data.payload.planDates);
+    //     });
+    // };
 
     const refreshDataOnClick = () => {
-        handleRefresh("http://192.168.0.205:8600/dtp/current");
+        props.sendDataToParent(handlePostRefresh("http://localhost:5000/dtp/current", props.currentBalance).PlanDates);
     };
 
     const gatherCurrentOnClick = () => {
-        handleRefresh("http://192.168.0.205:8600/dtp/current");
+        props.sendDataToParent(handlePostRefresh("http://localhost:5000/dtp/current", props.currentBalance).PlanDates);
     };
 
     const gatherFullOnClick = () => {
-        handleRefresh("http://192.168.0.205:8600/dtp/full");
+        props.sendDataToParent(handlePostRefresh("http://localhost:5000/dtp/full", props.currentBalance).PlanDates);
     };
 
     return (

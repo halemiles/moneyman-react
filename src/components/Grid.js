@@ -4,6 +4,7 @@ import Table from 'react-bootstrap/Table';
 import Controls from './Controls';
 import './Table.css'
 import { v4 as uuidv4 } from 'uuid';
+import {handlePostRefresh} from "../data/DutTillPayday.ts";
 
 const serverUrl = process.env.REACT_APP_MONEYMAN_SERVER_URL;
 export default function Grid() {
@@ -11,15 +12,15 @@ export default function Grid() {
   const [amountDue, setAmountDue] = useState(0);
 
   useEffect(() => {
+    const fetchData = async () => {
+        const plandates = await handlePostRefresh('http://localhost:5000/dtp/current', 500);
+        console.log("planDates - ", plandates);
+        setPlanDates(plandates.planDates);
+        setAmountDue(plandates.amountDue);
+    };
 
-    fetch(serverUrl + "/dtp/current")
-      .then((res) => res.json())
-      .then((data) => {
-        setPlanDates(data.payload.planDates);
-        setAmountDue(data.payload.amountDue);
-      });
-  }, [serverUrl]);
-
+    fetchData();
+}, [serverUrl, handlePostRefresh]);
   const receiveDataFromChild = (data) => {
     setPlanDates(data);
   };
