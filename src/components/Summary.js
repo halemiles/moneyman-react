@@ -13,9 +13,11 @@ export default function Summary(props) {
 
     useEffect(() => {
       let totalDue = 0;
+      if(props.planDates){
       props.planDates.forEach((pd) => {
-        totalDue += pd.amount;
-      });
+          totalDue += pd.amount;
+        });
+      }
       setDue(totalDue.toFixed(2));
       setRemaining((actual - totalDue).toFixed(2));
     }, [props.planDates, actual]);
@@ -44,5 +46,5 @@ export default function Summary(props) {
     </div>
   );
 
-  
+
 }

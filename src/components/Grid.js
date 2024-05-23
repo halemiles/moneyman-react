@@ -16,13 +16,15 @@ export default function Grid() {
         const plandates = await handlePostRefresh('http://localhost:5000/dtp/current', 500);
         console.log("planDates - ", plandates);
         setPlanDates(plandates.planDates);
+        console.log(plandates.planDates);
         setAmountDue(plandates.amountDue);
     };
 
     fetchData();
 }, [serverUrl, handlePostRefresh]);
-  const receiveDataFromChild = (data) => {
-    setPlanDates(data);
+  const receiveDataFromChild = async (data) => {
+    console.log("Setting plan date child data", await data)
+    setPlanDates(await data);
   };
 
   const formatDate = (date) => {

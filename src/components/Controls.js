@@ -20,16 +20,28 @@ export default function Controls(props) {
     //     });
     // };
 
-    const refreshDataOnClick = () => {
-        props.sendDataToParent(handlePostRefresh("http://localhost:5000/dtp/current", props.currentBalance).PlanDates);
+    const refreshDataOnClick = async () => {
+        console.log("Getting data");
+        const data = await handlePostRefresh("http://localhost:5000/dtp/current", props.currentBalance);
+        if(data) {
+            props.sendDataToParent(data.planDates);
+        }
     };
 
-    const gatherCurrentOnClick = () => {
-        props.sendDataToParent(handlePostRefresh("http://localhost:5000/dtp/current", props.currentBalance).PlanDates);
+    const gatherCurrentOnClick = async () => {
+        console.log("Getting data");
+        const data = await handlePostRefresh("http://localhost:5000/dtp/current", props.currentBalance);
+        if(data) {
+            props.sendDataToParent(data.planDates);
+        }
     };
 
-    const gatherFullOnClick = () => {
-        props.sendDataToParent(handlePostRefresh("http://localhost:5000/dtp/full", props.currentBalance).PlanDates);
+    const gatherFullOnClick = async () => {
+        console.log("Getting data");
+        const data = await handlePostRefresh("http://localhost:5000/dtp/full", props.currentBalance);
+        if(data) {
+            props.sendDataToParent(data.planDates);
+        }
     };
 
     return (
