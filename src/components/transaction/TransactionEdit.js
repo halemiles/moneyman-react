@@ -11,6 +11,7 @@ function TransactionEdit()
     let id = useParams().id;
     const [startDate, setStartDate] = useState(new Date());//["", function(){}
     const [transaction, setTransaction] = useState({});//[{}, function(){}
+    const [isAnticipatedSwitch, setAnticipatedSwitch] = useState(false);//[{}, function(){}
 
     //fetch transaction by id
     //populate form with transaction data
@@ -23,22 +24,35 @@ function TransactionEdit()
                 console.log(data);
                 setTransaction(data);
                 setStartDate(data.date);
+                setAnticipatedSwitch(data.isAnticipated ?? false);
             }
         );
     }, []);
 
     function handleSubmit(event) {
         event.preventDefault();
-        const data = new FormData(event.target);
-        console.log(data);
-        axios.put(serverUrl + "/transaction/", {
-            body: data
-        }).then((res) => {
-            console.log(res);
-        });
+        const formData = new FormData(event.target);
+        const data = Object.fromEntries(formData.entries());
+        data.startDate = '2024-06-01';
+        console.log(isAnticipatedSwitch);
+        data.isAnticipated = isAnticipatedSwitch;
+        console.log(JSON.stringify(data));
+        fetch(serverUrl + "/transaction/", {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     }
 
-    function formatDate(dateString) { 
+    function formatDate(dateString) {
         console.log(dateString);
         const inputDate = new Date(dateString);
 
@@ -56,12 +70,13 @@ function TransactionEdit()
         return convertedDate;
     }
 
+
     return (
         <div>
             <h1>{transaction.name}</h1>
              <Form onSubmit={handleSubmit}>
              <Row>
-                    <Form.Group as={Col} md="4" controlId="id">
+                    <Form.Group as={Col} md="4" >
                         <Form.Label>Amount</Form.Label>
                         <Form.Control
                             required
@@ -75,7 +90,7 @@ function TransactionEdit()
                     </Form.Group>
                 </Row>
                 <Row>
-                    <Form.Group as={Col} md="4" controlId="name">
+                    <Form.Group as={Col} md="4" >
                         <Form.Label>Amount</Form.Label>
                         <Form.Control
                             required
@@ -104,12 +119,12 @@ function TransactionEdit()
                 </Row>
 
                 <Row>
-                    <Form.Group as={Col} md="4" controlId="startDate" >
+                    <Form.Group as={Col} md="4" >
                         <Form.Label>Start Date</Form.Label>
                         <Form.Control
                             required
                             id="startDate"
-                            name="Date"
+                            name="startDate"
                             type="string"
                             placeholder="Start Date"
                             defaultValue={startDate}
@@ -117,11 +132,22 @@ function TransactionEdit()
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>
                 </Row>
-            
+                <Row>
+                    <Form.Group as={Col} md="4" >
+                        <Form.Check // prettier-ignore
+                            type="switch"
+                            id="isAnticipatedSwitch"
+                            name="isAnticipatedSwitch"
+                            label="Is Anticipated"
+                            checked={isAnticipatedSwitch}
+                            onChange={(e) => {console.log(e.target.checked); setAnticipatedSwitch(e.target.checked)}}
+                        />
+                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                    </Form.Group>
+                </Row>
+
                  <Button type="submit">Submit</Button>
              </Form>
-            
-
         </div>
     );
 }

@@ -36,14 +36,14 @@ function TransactionEdit()
     return (
         <div>
             <h1>{transaction.name}</h1>
-            
+
 
 
              <Form onSubmit={handleSubmit}>
-                
+
 
                 <Row>
-                    <Form.Group as={Col} md="4" controlId="validationCustom02">
+                    <Form.Group as={Col} md="4" >
                         <Form.Label>Amount</Form.Label>
                         <Form.Control
                             required
@@ -58,7 +58,7 @@ function TransactionEdit()
                 </Row>
 
                 <Row>
-                    <Form.Group as={Col} md="4" controlId="validationCustom03">
+                    <Form.Group as={Col} md="4" >
                         <Form.Label>Start Date</Form.Label>
                         <Form.Control
                             required
@@ -71,10 +71,22 @@ function TransactionEdit()
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>
                 </Row>
-            
+                <Row>
+                    <Form.Group as={Col} md="4" >
+                        <Form.Label>Anticipated</Form.Label>
+                        <Form.Check // prettier-ignore
+                        id="switch"
+        type="switch"
+        id="custom-switch"
+        label="Check this switch"
+      />
+                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                    </Form.Group>
+                </Row>
+
                  <button>Submit</button>
              </Form>
-            
+
 
         </div>
     );

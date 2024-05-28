@@ -51,7 +51,7 @@ export default function Grid() {
             <tr key={uuidv4()}>
               <td>{date.transactionName}</td>
               <td>{date.amount}</td>
-              <td>{formatDate(date.date)}</td>
+              <td>{formatDate(date.startDate)}</td>
             </tr>
           ))}
         </tbody>
