@@ -43,7 +43,11 @@ function Layout() {
 const About = () => (
   <div>
     <h1>About</h1>
+    <h2>
+      This is a simple application that allows you to create and edit transactions.
+    </h2>
   </div>
 );
+
 
 export default Layout;

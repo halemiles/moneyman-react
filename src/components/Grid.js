@@ -4,6 +4,7 @@ import Table from 'react-bootstrap/Table';
 import Controls from './Controls';
 import './Table.css'
 import { v4 as uuidv4 } from 'uuid';
+import {handlePostRefresh} from "../data/DutTillPayday.ts";
 
 const serverUrl = process.env.REACT_APP_MONEYMAN_SERVER_URL;
 export default function Grid() {
@@ -11,17 +12,24 @@ export default function Grid() {
   const [amountDue, setAmountDue] = useState(0);
 
   useEffect(() => {
-    
-    fetch(serverUrl + "/dtp/current")
-      .then((res) => res.json())
-      .then((data) => {
-        setPlanDates(data.planDates);
-        setAmountDue(data.amountDue);
-      });
-  }, [serverUrl]);
+    const fetchData = async () => {
+        const plandates = await handlePostRefresh('http://localhost:5000/dtp/current', 500);
+        console.log("planDates - ", plandates);
+        setPlanDates(plandates.planDates);
+        console.log(plandates.planDates);
+        setAmountDue(plandates.amountDue);
+    };
 
-  const receiveDataFromChild = (data) => {
-    setPlanDates(data);
+    fetchData();
+}, [serverUrl, handlePostRefresh]);
+  const receiveDataFromChild = async (data) => {
+    console.log("Setting plan date child data", await data)
+    setPlanDates(await data);
+  };
+
+  const formatDate = (date) => {
+    console.log(date);
+    return new Date(date).toLocaleDateString();
   };
 
   return (
@@ -43,12 +51,11 @@ export default function Grid() {
             <tr key={uuidv4()}>
               <td>{date.transactionName}</td>
               <td>{date.amount}</td>
-              <td>{new Date(date.date).toLocaleDateString()}</td>
+              <td>{formatDate(date.startDate)}</td>
             </tr>
           ))}
         </tbody>
       </Table>
-      <h2>Amount Due: ${amountDue}</h2>
     </div>
   );
 }
