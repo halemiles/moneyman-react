@@ -1,8 +1,8 @@
-import {useEffect} from "react";
+import {useEffect, useImperativeHandle} from "react";
 import {useParams} from "react-router-dom/cjs/react-router-dom.min";
 import {useState} from "react";
 import {Button, Form, Row, Col} from "react-bootstrap";
-import axios from "axios";
+import { useHistory } from 'react-router-dom';
 
 const serverUrl = process.env.REACT_APP_MONEYMAN_SERVER_URL;
 
@@ -12,6 +12,7 @@ function TransactionEdit()
     const [startDate, setStartDate] = useState(new Date());//["", function(){}
     const [transaction, setTransaction] = useState({});//[{}, function(){}
     const [isAnticipatedSwitch, setAnticipatedSwitch] = useState(false);//[{}, function(){}
+    const history = useHistory();
 
     //fetch transaction by id
     //populate form with transaction data
@@ -70,6 +71,22 @@ function TransactionEdit()
         return convertedDate;
     }
 
+    function handleDelete() {
+        const userConfirmed = window.confirm("Are you sure you want to delete this transaction?");
+        if (userConfirmed) {
+            fetch(`${serverUrl}/transaction/${transaction.id}`, {
+                method: 'DELETE',
+            })
+            .then(response => {
+                if (response.ok) {
+                    history.push('/transactions'); // Redirect to /transactions
+                }
+            })
+            .catch(error => {
+                console.error("Error during delete operation:", error);
+            });
+        }
+    }
 
     return (
         <div>
@@ -147,6 +164,7 @@ function TransactionEdit()
                 </Row>
 
                  <Button type="submit">Submit</Button>
+                 <Button variant="danger" onClick={handleDelete}>Delete</Button>
              </Form>
         </div>
     );

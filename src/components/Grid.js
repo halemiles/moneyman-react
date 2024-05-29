@@ -5,6 +5,7 @@ import Controls from './Controls';
 import './Table.css'
 import { v4 as uuidv4 } from 'uuid';
 import {handlePostRefresh} from "../data/DutTillPayday.ts";
+import {Row, Col} from 'react-bootstrap';
 
 const serverUrl = process.env.REACT_APP_MONEYMAN_SERVER_URL;
 export default function Grid() {
@@ -32,30 +33,43 @@ export default function Grid() {
     return new Date(date).toLocaleDateString();
   };
 
-  return (
-    <div>
-      <Summary planDates={planDates} />
-      <h2>Plan Dates</h2>
 
-      <Controls sendDataToParent={receiveDataFromChild} />
-      <Table className="white-table">
-        <thead>
-          <tr>
-            <th>Transaction Name</th>
-            <th>Amount</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {planDates.map((date) => (
-            <tr key={uuidv4()}>
-              <td>{date.transactionName}</td>
-              <td>{date.amount}</td>
-              <td>{formatDate(date.startDate)}</td>
+return (
+  <div>
+    <Row>
+    <Col md={12}>
+        <Controls sendDataToParent={receiveDataFromChild} />
+    </Col>
+    </Row>
+    <Row>
+    <Col md={3}>
+      <Summary planDates={planDates} />
+      </Col>
+      <Col md={6}>
+
+        <h2>Plan Dates</h2>
+
+        <Table className="white-table">
+          <thead>
+            <tr>
+              <th>Transaction Name</th>
+              <th>Amount</th>
+              <th>Date</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
-    </div>
-  );
+          </thead>
+          <tbody>
+            {planDates.map((date) => (
+              <tr key={uuidv4()}>
+                <td>{date.transactionName}</td>
+                <td>{date.amount}</td>
+                <td>{formatDate(date.startDate)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </Col>
+
+    </Row>
+  </div>
+);
 }
