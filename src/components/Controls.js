@@ -22,7 +22,7 @@ export default function Controls(props) {
 
     const refreshDataOnClick = async () => {
         console.log("Getting data");
-        const data = await handlePostRefresh("http://localhost:5000/dtp/current", props.currentBalance);
+        const data = await handlePostRefresh("http://localhost:5000/dtp/current", props.currentBalance, props.accountId);
         if(data) {
             props.sendDataToParent(data.planDates);
         }
@@ -30,7 +30,7 @@ export default function Controls(props) {
 
     const gatherCurrentOnClick = async () => {
         console.log("Getting data");
-        const data = await handlePostRefresh("http://localhost:5000/dtp/current", props.currentBalance);
+        const data = await handlePostRefresh("http://localhost:5000/dtp/current", props.currentBalance, props.accountId);
         if(data) {
             props.sendDataToParent(data.planDates);
         }
@@ -38,11 +38,19 @@ export default function Controls(props) {
 
     const gatherFullOnClick = async () => {
         console.log("Getting data");
-        const data = await handlePostRefresh("http://localhost:5000/dtp/full", props.currentBalance);
+        const data = await handlePostRefresh("http://localhost:5000/dtp/full", props.currentBalance, props.accountId);
         if(data) {
             props.sendDataToParent(data.planDates);
         }
     };
+
+    const handleDropdown = async(e) => {
+
+        const data = await handlePostRefresh("http://localhost:5000/dtp/current", props.currentBalance, e.target.value);
+        if(data) {
+            props.sendDataToParent(data.planDates);
+        }
+    }
 
     return (
         <div>
@@ -51,6 +59,13 @@ export default function Controls(props) {
                     <Button className="me-2" variant={"success"} onClick={refreshDataOnClick}>Refresh</Button>
                     <Button className="me-2" variant={"secondary"} onClick={gatherFullOnClick}>Full</Button>
                     <Button className="me-2" variant={"secondary"} onClick={gatherCurrentOnClick}>From today</Button>
+                </Col>
+                <Col>
+                    <select id="accountId" onChange={handleDropdown}>
+                        <option value="0">All</option>
+                        <option value="1">Natwest</option>
+                        <option value="2">Starling</option>
+                    </select>
                 </Col>
             </Form.Group>
         </div>

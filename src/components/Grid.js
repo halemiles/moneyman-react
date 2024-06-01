@@ -10,10 +10,11 @@ const serverUrl = process.env.REACT_APP_MONEYMAN_SERVER_URL;
 export default function Grid() {
   const [planDates, setPlanDates] = useState([]);
   const [amountDue, setAmountDue] = useState(0);
+  const [accountId, setAccountId] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
-        const plandates = await handlePostRefresh('http://localhost:5000/dtp/current', 500);
+        const plandates = await handlePostRefresh('http://localhost:5000/dtp/current', 500, accountId);
         console.log("planDates - ", plandates);
         setPlanDates(plandates.planDates);
         console.log(plandates.planDates);
