@@ -1,8 +1,7 @@
-import {useEffect, useImperativeHandle} from "react";
-import {useParams} from "react-router-dom/cjs/react-router-dom.min";
+import {useEffect, useImperativeHandle, useHistory, useParams} from "react";
+
 import {useState} from "react";
 import {Button, Form, Row, Col} from "react-bootstrap";
-import { useHistory } from 'react-router-dom';
 
 const serverUrl = process.env.REACT_APP_MONEYMAN_SERVER_URL;
 

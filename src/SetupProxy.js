@@ -4,7 +4,7 @@ module.exports = function(app) {
   app.use(
     '/api',
     createProxyMiddleware({
-      target: 'http://localhost:3000/dtp/current',
+      target: `${process.env.REACT_APP_MONEYMAN_SERVER_URL}/dtp/current?startingvalue=1`,
       changeOrigin: true,
     })
   );

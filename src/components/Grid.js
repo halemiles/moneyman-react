@@ -14,7 +14,7 @@ export default function Grid() {
 
   useEffect(() => {
     const fetchData = async () => {
-        const plandates = await handlePostRefresh('http://localhost:5000/dtp/current', 500);
+        const plandates = await handlePostRefresh(`${process.env.REACT_APP_MONEYMAN_SERVER_URL}/dtp/current?startingvalue=1`, 500);
         console.log("planDates - ", plandates);
         setPlanDates(plandates.planDates);
         console.log(plandates.planDates);

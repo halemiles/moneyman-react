@@ -1,36 +1,24 @@
 import React from "react";
 import Grid from "./Grid";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Transactions from "./Transactions";
 import Header from "./Header";
 import TransactionEdit from "./transaction/TransactionEdit";
 import "../App.css";
 
 function Layout() {
-  
-
   return (
     <div>
       <div className="ui center aligned container">
-        <div >
-          
+        <div>
           <Header />
           <BrowserRouter>
-            <Switch>
-              <Route path="/home">
-                <Grid />
-              </Route>
-              <Route path="/transactions">
-                <Transactions />
-                
-              </Route>
-              <Route path="/about">
-                <About />
-              </Route>
-              <Route path="/transactionedit/:id">
-                <TransactionEdit />
-              </Route>
-            </Switch>
+            <Routes>
+              <Route path="/home" element={<Grid />} />
+              <Route path="/transactions" element={<Transactions />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/transactionedit/:id" element={<TransactionEdit />} />
+            </Routes>
           </BrowserRouter>
         </div>
       </div>
@@ -38,8 +26,7 @@ function Layout() {
   );
 }
 
-// create about component. include h1 tag with text.
-
+// Create About component. Include h1 tag with text.
 const About = () => (
   <div>
     <h1>About</h1>
@@ -48,6 +35,5 @@ const About = () => (
     </h2>
   </div>
 );
-
 
 export default Layout;
