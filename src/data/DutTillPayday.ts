@@ -1,11 +1,10 @@
 export async function handlePostRefresh(url, currentBalance, accountId: number): Promise<any> {
     let finalResult = [];
     await fetch(url, {
-        method: 'POST',
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ StartingValue: 0, accountId: accountId })
     })
     .then((res) => res.json())
     .then((data) => {

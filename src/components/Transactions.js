@@ -2,12 +2,13 @@ import {Table} from "react-bootstrap";
 import React, {useState, useEffect} from "react";
 import { v4 as uuidv4 } from 'uuid';
 
+
 const serverUrl = process.env.REACT_APP_MONEYMAN_SERVER_URL;
 function Transactions(){
     const [transactions, setTransactions] = useState([]);
 
     useEffect(() => {
-        fetch(serverUrl + "/transaction")
+        fetch(`${process.env.REACT_APP_MONEYMAN_SERVER_URL}/transaction`)
             .then((res) => res.json())
             .then((data) => {
                 setTransactions(data);
