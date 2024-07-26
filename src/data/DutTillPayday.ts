@@ -1,11 +1,10 @@
-export async function handlePostRefresh(url, currentBalance): Promise<any> {
+export async function handlePostRefresh(url, currentBalance, accountId: number): Promise<any> {
     let finalResult = [];
     await fetch(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         },
-        
     })
     .then((res) => res.json())
     .then((data) => {

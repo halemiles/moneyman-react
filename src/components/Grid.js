@@ -11,6 +11,7 @@ const serverUrl = process.env.REACT_APP_MONEYMAN_SERVER_URL;
 export default function Grid() {
   const [planDates, setPlanDates] = useState([]);
   const [amountDue, setAmountDue] = useState(0);
+  const [accountId, setAccountId] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
