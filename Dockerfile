@@ -5,8 +5,7 @@ FROM node:21.6.1-alpine
 WORKDIR /app
 
 # Copy package.json and package-lock.json
-#COPY package*.json ./
-
+COPY package*.json ./
 
 # Copy app source code
 COPY . .
