@@ -11,7 +11,6 @@ const serverUrl = process.env.REACT_APP_MONEYMAN_SERVER_URL;
 export default function Grid() {
   const [planDates, setPlanDates] = useState([]);
   const [amountDue, setAmountDue] = useState(0);
-  const [accountId, setAccountId] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,7 +22,7 @@ export default function Grid() {
     };
 
     fetchData();
-}, [serverUrl, handlePostRefresh]);
+}, []);
   const receiveDataFromChild = async (data) => {
     console.log("Setting plan date child data", await data)
     setPlanDates(await data);
