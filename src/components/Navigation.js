@@ -4,19 +4,20 @@ import Nav from 'react-bootstrap/Nav';
 function Navigation()
 {
     return (
-        <Navbar>
-        <Nav defaultActiveKey="/home" as="ul" >
-            <Nav.Item as="li">
-                <Nav.Link href="/home">Home</Nav.Link>
-            </Nav.Item>
-            <Nav.Item as="li">
-                <Nav.Link href="/duetillpayday">Due Till Payday</Nav.Link>
-            </Nav.Item>
+        <Navbar bg="dark" data-bs-theme="dark">
+            <Navbar.Brand href="#home">Money Manager</Navbar.Brand>
+            <Nav defaultActiveKey="/home" as="ul" >
+                <Nav.Item as="li">
+                    <Nav.Link href="/home">Home</Nav.Link>
+                </Nav.Item>
+                <Nav.Item as="li">
+                    <Nav.Link href="/duetillpayday">Due Till Payday</Nav.Link>
+                </Nav.Item>
 
-            <Nav.Item as="li">
-                <Nav.Link href="/transactions">Transactions</Nav.Link>
-            </Nav.Item>
-        </Nav>
+                <Nav.Item as="li">
+                    <Nav.Link href="/transactions">Transactions</Nav.Link>
+                </Nav.Item>
+            </Nav>
         </Navbar>
     )
 }
