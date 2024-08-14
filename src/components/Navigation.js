@@ -13,8 +13,7 @@ function Navigation()
                 <Nav.Item as="li">
                     <Nav.Link href="/duetillpayday">Due Till Payday</Nav.Link>
                 </Nav.Item>
-
-                <Nav.Item as="li">
+                 <Nav.Item as="li">
                     <Nav.Link href="/transactions">Transactions</Nav.Link>
                 </Nav.Item>
             </Nav>

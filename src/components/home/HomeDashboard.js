@@ -5,9 +5,6 @@ import BurndownChart from "./burndown-chart";
 
 
 function Transactions(){
-    const [transactions, setTransactions] = useState([]);
-
-
 
     return(
         <div>
@@ -15,16 +12,16 @@ function Transactions(){
                 <h1>Dashboard</h1>
                 <Row>
                     <Col>
-                    <BurndownChart />
+                    <DashboardTop />
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                    <DashboardTop />
+                    <BurndownChart />
                     </Col>
                 </Row>
             </Container>
-            
+
         </div>
     )
 }
