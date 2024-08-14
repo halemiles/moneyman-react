@@ -6,9 +6,7 @@ import { formatDateToMonthYear } from '../../logic/DateFormetting.js';
 
 function BurndownChart() {
     const [planDates, setPlanDates] = useState([]);
-    const startingAmount = 1234;
-    let runningTotal = 0;
-
+    const startingAmount = process.env.REACT_APP_MONTHLY_INCOME;
 
   useEffect(() => {
     const fetchData = async () => {

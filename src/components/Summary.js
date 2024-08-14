@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function Summary(props) {
 
-    const [actual, setActual] = useState(2200);
+    const [actual, setActual] = useState(0);
     const [due, setDue] = useState(0);
     const [remaining, setRemaining] = useState(0);
 
@@ -18,6 +18,7 @@ export default function Summary(props) {
           totalDue += pd.amount;
         });
       }
+      //setActual(process.env.REACT_APP_MONTHLY_INCOME - totalDue);
       setDue(totalDue.toFixed(2));
       setRemaining((actual - totalDue).toFixed(2));
     }, [props.planDates, actual]);
