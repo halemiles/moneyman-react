@@ -4,13 +4,7 @@ import Navigation from "./Navigation";
 function Header() {
     return (
         <div>
-            <Container fluid="md">
-                <Row>
-                    <Col>
-                        <Navigation />
-                    </Col>
-                </Row>
-            </Container>
+            <Navigation />
         </div>
 )};
 

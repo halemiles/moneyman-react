@@ -33,14 +33,14 @@ export default function Summary(props) {
     <div>
       <h2>Summary</h2>
       <div>
-            <Form>
-              <Form.Group controlId="actualValue" as={Row} className="mb-3">
-                <InputGroup>
-                  <InputGroup.Text>Current balance</InputGroup.Text>
-                  <Form.Control aria-label="Current balance" type="number" step="1" value={actual}   onChange={handleActualChange}/>
-                </InputGroup>
-            </Form.Group>
-            </Form>
+        <Form>
+          <Form.Group controlId="actualValue" as={Row} className="mb-3">
+            <InputGroup>
+              <InputGroup.Text>Current balance</InputGroup.Text>
+              <Form.Control aria-label="Current balance" type="number" step="1" value={actual}   onChange={handleActualChange}/>
+            </InputGroup>
+        </Form.Group>
+        </Form>
         <p>Due: {due}</p>
         <p>Remaining: {remaining}</p>
       </div>

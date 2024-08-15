@@ -8,8 +8,7 @@ function Transactions(){
 
     return(
         <div>
-            <Container fluid>
-                <h1>Dashboard</h1>
+                <h2>Dashboard</h2>
                 <Row>
                     <Col>
                     <DashboardTop />
@@ -20,7 +19,6 @@ function Transactions(){
                     <BurndownChart />
                     </Col>
                 </Row>
-            </Container>
 
         </div>
     )

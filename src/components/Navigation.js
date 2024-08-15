@@ -1,10 +1,11 @@
-import {Navbar} from 'react-bootstrap';
+import {Navbar, Container} from 'react-bootstrap';
 import Nav from 'react-bootstrap/Nav';
 
 function Navigation()
 {
     return (
-        <Navbar bg="dark" data-bs-theme="dark">
+        <Navbar>
+        <Container>
             <Navbar.Brand href="#home">Money Manager</Navbar.Brand>
             <Nav defaultActiveKey="/home" as="ul" >
                 <Nav.Item as="li">
@@ -17,6 +18,7 @@ function Navigation()
                     <Nav.Link href="/transactions">Transactions</Nav.Link>
                 </Nav.Item>
             </Nav>
+            </Container>
         </Navbar>
     )
 }
