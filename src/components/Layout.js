@@ -1,7 +1,8 @@
 import React from "react";
-import Grid from "./Grid";
+import DueTillPaydayGrid from "./duetillpayday/DueTillPaydayGrid";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Transactions from "./Transactions";
+import HomeDashboard from './home/HomeDashboard'
+import Transactions from "./transaction/Transactions";
 import Header from "./Header";
 import TransactionEdit from "./transaction/TransactionEdit";
 import "../App.css";
@@ -9,18 +10,17 @@ import "../App.css";
 function Layout() {
   return (
     <div>
+      <Header />
       <div className="ui center aligned container">
-        <div>
-          <Header />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/home" element={<Grid />} />
-              <Route path="/transactions" element={<Transactions />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/transactionedit/:id" element={<TransactionEdit />} />
-            </Routes>
-          </BrowserRouter>
-        </div>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/home" element={<HomeDashboard />} />
+            <Route path="/duetillpayday" element={<DueTillPaydayGrid />} />
+            <Route path="/transactions" element={<Transactions />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/transactionedit/:id" element={<TransactionEdit />} />
+          </Routes>
+        </BrowserRouter>
       </div>
     </div>
   );

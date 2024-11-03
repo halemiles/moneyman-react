@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
-import Summary from './Summary';
+import Summary from '../Summary.js';
 import Table from 'react-bootstrap/Table';
-import Controls from './Controls';
-import './Table.css'
+import Controls from '../Controls.js';
+import '../Table.css'
 import { v4 as uuidv4 } from 'uuid';
-import {handlePostRefresh} from "../data/DutTillPayday.ts";
+import {handlePostRefresh} from "../../data/DutTillPayday.ts";
 import {Row, Col} from 'react-bootstrap';
 
-const serverUrl = process.env.REACT_APP_MONEYMAN_SERVER_URL;
-export default function Grid() {
+export default function DueTillPaydayGrid() {
   const [planDates, setPlanDates] = useState([]);
-  const [amountDue, setAmountDue] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,7 +16,6 @@ export default function Grid() {
         console.log("planDates - ", plandates);
         setPlanDates(plandates.planDates);
         console.log(plandates.planDates);
-        setAmountDue(plandates.amountDue);
     };
 
     fetchData();
@@ -62,7 +59,7 @@ return (
               <tr key={uuidv4()}>
                 <td>{date.transactionName}</td>
                 <td>{date.amount}</td>
-                <td>{formatDate(date.startDate)}</td>
+                <td>{formatDate(date.date)}</td>
               </tr>
             ))}
           </tbody>
