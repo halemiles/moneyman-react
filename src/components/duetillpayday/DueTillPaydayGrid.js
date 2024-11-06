@@ -6,9 +6,43 @@ import '../Table.css'
 import { v4 as uuidv4 } from 'uuid';
 import {handlePostRefresh} from "../../data/DutTillPayday.ts";
 import {Row, Col} from 'react-bootstrap';
+import { useTable } from 'react-table';
+
+
 
 export default function DueTillPaydayGrid() {
+
+
   const [planDates, setPlanDates] = useState([]);
+  const columns = React.useMemo(
+     () => [
+      {
+        Header: 'Name',
+        accessor: 'transactionName', // accessor is the "key" in the data
+        canSort: true
+
+      },
+      {
+        Header: 'Amount',
+        accessor: 'amount',
+      },
+      {
+        Header: 'PlanDate',
+        accessor: 'date',
+      }
+    ],
+    []
+  )
+
+  const data = React.useMemo(() => planDates, [])
+  const tableInstance = useTable({ columns, data });
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+  } = tableInstance
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,11 +57,6 @@ export default function DueTillPaydayGrid() {
   const receiveDataFromChild = async (data) => {
     console.log("Setting plan date child data", await data)
     setPlanDates(await data);
-  };
-
-  const formatDate = (date) => {
-    console.log(date);
-    return new Date(date).toLocaleDateString();
   };
 
 
@@ -46,24 +75,74 @@ return (
 
         <h2>Plan Dates</h2>
 
-        <Table className="white-table">
+        <Table {...getTableProps()}>
           <thead>
-            <tr>
-              <th>Transaction Name</th>
-              <th>Amount</th>
-              <th>Date</th>
-            </tr>
+            {
+              // Loop over the header rows
+
+              headerGroups.map((headerGroup) => (
+                // Apply the header row props
+
+                <tr {...headerGroup.getHeaderGroupProps()}>
+                  {
+                    // Loop over the headers in each row
+
+                    headerGroup.headers.map((column) => (
+                      // Apply the header cell props
+
+                      <th {...column.getHeaderProps()}>
+                        {
+                          // Render the header
+
+                          column.render("Header")
+                        }
+                      </th>
+                    ))
+                  }
+                </tr>
+              ))
+            }
           </thead>
-          <tbody>
-            {planDates.map((date) => (
-              <tr key={uuidv4()}>
-                <td>{date.transactionName}</td>
-                <td>{date.amount}</td>
-                <td>{formatDate(date.date)}</td>
-              </tr>
-            ))}
+
+          {/* Apply the table body props */}
+
+          <tbody {...getTableBodyProps()}>
+            {
+              // Loop over the table rows
+
+              rows.map((row) => {
+                // Prepare the row for display
+
+                prepareRow(row);
+
+                return (
+                  // Apply the row props
+
+                  <tr {...row.getRowProps()}>
+                    {
+                      // Loop over the rows cells
+
+                      row.cells.map((cell) => {
+                        // Apply the cell props
+
+                        return (
+                          <td {...cell.getCellProps()}>
+                            {
+                              // Render the cell contents
+
+                              cell.render("Cell")
+                            }
+                          </td>
+                        );
+                      })
+                    }
+                  </tr>
+                );
+              })
+            }
           </tbody>
         </Table>
+
       </Col>
 
     </Row>
