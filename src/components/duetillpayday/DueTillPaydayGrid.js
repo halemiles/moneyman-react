@@ -6,7 +6,7 @@ import '../Table.css'
 import { v4 as uuidv4 } from 'uuid';
 import {handlePostRefresh} from "../../data/DutTillPayday.ts";
 import {Row, Col} from 'react-bootstrap';
-import { useTable } from 'react-table';
+import { useTable, useSortBy } from 'react-table';
 
 
 
@@ -19,8 +19,7 @@ export default function DueTillPaydayGrid() {
       {
         Header: 'Name',
         accessor: 'transactionName', // accessor is the "key" in the data
-        canSort: true
-
+        sortType: 'basic'
       },
       {
         Header: 'Amount',
@@ -28,21 +27,34 @@ export default function DueTillPaydayGrid() {
       },
       {
         Header: 'PlanDate',
-        accessor: 'date',
+        accessor: 'date'
+      },
+      {
+        Header: 'Action',
+        accessor: 'action',
+        Cell: row => (
+          <div>
+             <button onClick={e=> handleEdit(row.row.index)}>Edit</button>
+          </div>
+          ),
       }
     ],
     []
   )
 
-  const data = React.useMemo(() => planDates, [])
-  const tableInstance = useTable({ columns, data });
+  const handleEdit = (original) => {
+    console.log(original);
+    setPlanDates(planDates.filter((v, i) => i !== original));
+  }
+
+  const data = React.useMemo(() => planDates, [planDates]);
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     rows,
     prepareRow,
-  } = tableInstance
+  } = useTable({ columns, data }, useSortBy);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,6 +62,7 @@ export default function DueTillPaydayGrid() {
         console.log("planDates - ", plandates);
         setPlanDates(plandates.planDates);
         console.log(plandates.planDates);
+
     };
 
     fetchData();
@@ -72,30 +85,26 @@ return (
       <Summary planDates={planDates} />
       </Col>
       <Col md={6}>
-
         <h2>Plan Dates</h2>
-
         <Table {...getTableProps()}>
           <thead>
             {
               // Loop over the header rows
-
               headerGroups.map((headerGroup) => (
                 // Apply the header row props
-
                 <tr {...headerGroup.getHeaderGroupProps()}>
                   {
                     // Loop over the headers in each row
-
                     headerGroup.headers.map((column) => (
                       // Apply the header cell props
-
-                      <th {...column.getHeaderProps()}>
+                      <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                         {
                           // Render the header
-
                           column.render("Header")
                         }
+                        <span>
+                            {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}
+                        </span>
                       </th>
                     ))
                   }
@@ -107,39 +116,17 @@ return (
           {/* Apply the table body props */}
 
           <tbody {...getTableBodyProps()}>
-            {
-              // Loop over the table rows
-
-              rows.map((row) => {
-                // Prepare the row for display
-
+            {rows.map(
+              (row, i) => {
                 prepareRow(row);
-
                 return (
-                  // Apply the row props
-
                   <tr {...row.getRowProps()}>
-                    {
-                      // Loop over the rows cells
-
-                      row.cells.map((cell) => {
-                        // Apply the cell props
-
-                        return (
-                          <td {...cell.getCellProps()}>
-                            {
-                              // Render the cell contents
-
-                              cell.render("Cell")
-                            }
-                          </td>
-                        );
-                      })
-                    }
+                    {row.cells.map(cell => {
+                      return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                    })}
                   </tr>
-                );
-              })
-            }
+                )}
+            )}
           </tbody>
         </Table>
 

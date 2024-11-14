@@ -21,7 +21,7 @@ export default function Controls(props) {
     // };
 
     const refreshDataOnClick = async () => {
-        console.log("Getting data");
+        console.log("refreshDataOnClick");
         const data = await handlePostRefresh(`${process.env.REACT_APP_MONEYMAN_SERVER_URL}/dtp/current?startingvalue=1`, props.currentBalance);
 
         if(data) {
@@ -30,7 +30,7 @@ export default function Controls(props) {
     };
 
     const gatherCurrentOnClick = async () => {
-        console.log("Getting data");
+        console.log("gatherCurrentOnClick");
         const data = await handlePostRefresh(`${process.env.REACT_APP_MONEYMAN_SERVER_URL}/dtp/current?startingvalue=1`, props.currentBalance);
 
         if(data) {
@@ -39,7 +39,7 @@ export default function Controls(props) {
     };
 
     const gatherFullOnClick = async () => {
-        console.log("Getting data");
+        console.log("gatherFullOnClick");
         const data = await handlePostRefresh(`${process.env.REACT_APP_MONEYMAN_SERVER_URL}/dtp/full?startingvalue=1`, props.currentBalance);
 
         if(data) {
@@ -49,7 +49,7 @@ export default function Controls(props) {
 
     const handleDropdown = async(e) => {
 
-        const data = await handlePostRefresh("http://localhost:5000/dtp/current", props.currentBalance, e.target.value);
+        const data = await handlePostRefresh("http://localhost:5000/dtp?startingValue=1", props.currentBalance, e.target.value);
         if(data) {
             props.sendDataToParent(data.planDates);
         }
