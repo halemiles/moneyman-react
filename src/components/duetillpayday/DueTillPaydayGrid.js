@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import {handlePostRefresh} from "../../data/DutTillPayday.ts";
 import {Row, Col} from 'react-bootstrap';
 import { useTable, useSortBy } from 'react-table';
+import { formatDateToMonthYear } from '../../logic/DateFormetting.js';
 
 
 
@@ -14,6 +15,9 @@ export default function DueTillPaydayGrid() {
 
 
   const [planDates, setPlanDates] = useState([]);
+
+  const [startDate, setStartDate] = useState('-');
+  const [endDate, setEndDate] = useState('-');
   const columns = React.useMemo(
      () => [
       {
@@ -61,6 +65,8 @@ export default function DueTillPaydayGrid() {
         const plandates = await handlePostRefresh(`${process.env.REACT_APP_MONEYMAN_SERVER_URL}/dtp/current?startingvalue=1`, 500);
         console.log("planDates - ", plandates);
         setPlanDates(plandates.planDates);
+        setStartDate(formatDateToMonthYear(plandates.startDate));
+        setEndDate(formatDateToMonthYear(plandates.endDate));
         console.log(plandates.planDates);
 
     };
@@ -83,6 +89,9 @@ return (
     <Row>
     <Col md={3}>
       <Summary planDates={planDates} />
+
+      <p>Start Date: {startDate}</p>
+        <p>End Date: {endDate}</p>
       </Col>
       <Col md={6}>
         <h2>Plan Dates</h2>
