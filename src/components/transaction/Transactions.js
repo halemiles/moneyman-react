@@ -1,10 +1,9 @@
-import {Table} from "react-bootstrap";
-import React, {useState, useEffect} from "react";
+import React, { useEffect, useState } from 'react';
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, Typography, Button } from '@mui/material';
+import { Link } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
-
-const serverUrl = process.env.REACT_APP_MONEYMAN_SERVER_URL;
-function Transactions(){
+const Transactions = () => {
     const [transactions, setTransactions] = useState([]);
 
     useEffect(() => {
@@ -13,35 +12,41 @@ function Transactions(){
             .then((data) => {
                 setTransactions(data);
             });
-    }, [serverUrl]);
+    }, []);
 
-
-    return(
+    return (
         <div>
-            <h1>Transactions</h1>
-            <Table className="white-table">
-                <thead>
-                <tr>
-                    <th>Transaction Name</th>
-                    <th>Amount</th>
-                    <th>Date</th>
-                    <th>Edit</th>
-                </tr>
-                </thead>
-                <tbody>
-                {transactions.map((transaction) => (
-                    <tr key={uuidv4()}>
-                        <td>{transaction.name}</td>
-                        <td>{transaction.amount}</td>
-                        <td>{new Date(transaction.startDate).toLocaleDateString()}</td>
-                        <td><a href={"/transactionedit/" + transaction.id}>Edit</a></td>
-                    </tr>
-                ))}
-                </tbody>
-            </Table>
-
+            <Typography variant="h4" gutterBottom>
+                Transactions
+            </Typography>
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Transaction Name</TableCell>
+                            <TableCell>Amount</TableCell>
+                            <TableCell>Date</TableCell>
+                            <TableCell>Edit</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {transactions.map((transaction) => (
+                            <TableRow key={uuidv4()}>
+                                <TableCell>{transaction.name}</TableCell>
+                                <TableCell>{transaction.amount}</TableCell>
+                                <TableCell>{new Date(transaction.startDate).toLocaleDateString()}</TableCell>
+                                <TableCell>
+                                    <Button component={Link} to={`/transactionedit/${transaction.id}`} variant="contained" color="primary">
+                                        Edit
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </div>
-    )
-}
+    );
+};
 
 export default Transactions;

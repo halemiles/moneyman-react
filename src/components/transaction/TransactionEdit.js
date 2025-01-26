@@ -1,21 +1,15 @@
-import {useEffect, useHistory, useParams} from "react";
-
-import {useState} from "react";
-import {Button, Form, Row, Col} from "react-bootstrap";
+import {useEffect, useState} from "react";
+import {useParams} from "react-router-dom";
+import {Button, TextField, Grid, Container, Typography} from "@mui/material";
 
 const serverUrl = process.env.REACT_APP_MONEYMAN_SERVER_URL;
 
 function TransactionEdit()
 {
-    let id = useParams().id;
-    const [startDate, setStartDate] = useState(new Date());//["", function(){}
-    const [transaction, setTransaction] = useState({});//[{}, function(){}
-    const [isAnticipatedSwitch, setAnticipatedSwitch] = useState(false);//[{}, function(){}
-    const history = useHistory();
-
-    //fetch transaction by id
-    //populate form with transaction data
-    //submit form to update transaction
+    let { id } = useParams();
+    const [startDate, setStartDate] = useState(new Date());
+    const [transaction, setTransaction] = useState({});
+    const [isAnticipatedSwitch, setAnticipatedSwitch] = useState(false);
 
     useEffect(() => {
         fetch(serverUrl + "/transaction/" + id)
@@ -23,17 +17,17 @@ function TransactionEdit()
             .then((data) => {
                 console.log(data);
                 setTransaction(data);
-                setStartDate(data.date);
+                setStartDate(formatDateForPicker(data.date));
                 setAnticipatedSwitch(data.isAnticipated ?? false);
             }
         );
-    }, []);
+    }, [id]);
 
     function handleSubmit(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
         const data = Object.fromEntries(formData.entries());
-        data.startDate = '2024-06-01';
+        data.date = formatDateForServer(data.date);
         console.log(isAnticipatedSwitch);
         data.isAnticipated = isAnticipatedSwitch;
         console.log(JSON.stringify(data));
@@ -52,22 +46,17 @@ function TransactionEdit()
             });
     }
 
-    function formatDate(dateString) {
-        console.log(dateString);
+    function formatDateForPicker(dateString) {
         const inputDate = new Date(dateString);
-
-        // // Check if the input date is valid
-        // if (isNaN(inputDate.getTime())) {
-        //     throw new Error('Invalid date');
-        // }
-
         const year = inputDate.getFullYear();
-        const month = String(inputDate.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+        const month = String(inputDate.getMonth() + 1).padStart(2, '0');
         const day = String(inputDate.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
 
-        var convertedDate = `${year}-${month}-${day}`;
-        console.log(convertedDate);
-        return convertedDate;
+    function formatDateForServer(dateString) {
+        const [year, month, day] = dateString.split('-');
+        return `${year}-${month}-${day}T00:00:00`;
     }
 
     function handleDelete() {
@@ -76,11 +65,6 @@ function TransactionEdit()
             fetch(`${serverUrl}/transaction/${transaction.id}`, {
                 method: 'DELETE',
             })
-            .then(response => {
-                if (response.ok) {
-                    history.push('/transactions'); // Redirect to /transactions
-                }
-            })
             .catch(error => {
                 console.error("Error during delete operation:", error);
             });
@@ -88,84 +72,58 @@ function TransactionEdit()
     }
 
     return (
-        <div>
-            <h1>{transaction.name}</h1>
-             <Form onSubmit={handleSubmit}>
-             <Row>
-                    <Form.Group as={Col} md="4" >
-                        <Form.Label>Amount</Form.Label>
-                        <Form.Control
+        <Container>
+            <Typography variant="h4">{transaction.name}</Typography>
+            <form onSubmit={handleSubmit}>
+                <Grid container spacing={3}>
+                    <Grid item xs={12} md={4}>
+                        <TextField
                             required
                             id="id"
                             name="Id"
+                            label="Id"
                             type="text"
-                            placeholder="Id"
+                            fullWidth
                             defaultValue={transaction.id}
                         />
-                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    </Form.Group>
-                </Row>
-                <Row>
-                    <Form.Group as={Col} md="4" >
-                        <Form.Label>Amount</Form.Label>
-                        <Form.Control
-                            required
-                            id="name"
-                            name="Name"
-                            type="text"
-                            placeholder="Name"
-                            defaultValue={transaction.name}
-                        />
-                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    </Form.Group>
-                </Row>
-                <Row>
-                    <Form.Group as={Col} md="4" controlId="amount">
-                        <Form.Label>Amount</Form.Label>
-                        <Form.Control
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <TextField
                             required
                             id="amount"
-                            name="Amount"
-                            type="text"
-                            placeholder="Amount"
+                            name="amount"
+                            label="Amount"
+                            type="number"
+                            fullWidth
                             defaultValue={transaction.amount}
                         />
-                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    </Form.Group>
-                </Row>
-
-                <Row>
-                    <Form.Group as={Col} md="4" >
-                        <Form.Label>Start Date</Form.Label>
-                        <Form.Control
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <TextField
                             required
-                            id="startDate"
-                            name="startDate"
-                            type="string"
-                            placeholder="Start Date"
-                            defaultValue={startDate}
+                            id="date"
+                            name="date"
+                            label="Date"
+                            type="date"
+                            fullWidth
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
                         />
-                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    </Form.Group>
-                </Row>
-                <Row>
-                    <Form.Group as={Col} md="4" >
-                        <Form.Check // prettier-ignore
-                            type="switch"
-                            id="isAnticipatedSwitch"
-                            name="isAnticipatedSwitch"
-                            label="Is Anticipated"
-                            checked={isAnticipatedSwitch}
-                            onChange={(e) => {console.log(e.target.checked); setAnticipatedSwitch(e.target.checked)}}
-                        />
-                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    </Form.Group>
-                </Row>
-
-                 <Button type="submit">Submit</Button>
-                 <Button variant="danger" onClick={handleDelete}>Delete</Button>
-             </Form>
-        </div>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Button variant="contained" color="primary" type="submit">
+                            Save
+                        </Button>
+                        <Button variant="contained" color="secondary" onClick={handleDelete}>
+                            Delete
+                        </Button>
+                    </Grid>
+                </Grid>
+            </form>
+        </Container>
     );
 }
 
