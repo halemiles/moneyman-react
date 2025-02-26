@@ -1,4 +1,4 @@
-import {Table} from "react-bootstrap";
+import {Table, Button} from "react-bootstrap";
 import React, {useState, useEffect} from "react";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -19,6 +19,7 @@ function Transactions(){
     return(
         <div>
             <h1>Transactions</h1>
+            <Button id="createButton" href="/transactioncreate">Create transaction</Button>
             <Table className="white-table">
                 <thead>
                 <tr>

@@ -5,6 +5,7 @@ import HomeDashboard from './home/HomeDashboard'
 import Transactions from "./transaction/Transactions";
 import Header from "./Header";
 import TransactionEdit from "./transaction/TransactionEdit";
+import TransactionCreate from "./transaction/TransactionCreate";
 import "../App.css";
 
 function Layout() {
@@ -19,6 +20,7 @@ function Layout() {
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/about" element={<About />} />
             <Route path="/transactionedit/:id" element={<TransactionEdit />} />
+            <Route path="/transactioncreate" element={<TransactionCreate />} />
           </Routes>
         </BrowserRouter>
       </div>

@@ -1,21 +1,15 @@
-import {useEffect, useHistory, useParams} from "react";
-
-import {useState} from "react";
-import {Button, Form, Row, Col} from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Button, Form, Row, Col } from "react-bootstrap";
 
 const serverUrl = process.env.REACT_APP_MONEYMAN_SERVER_URL;
 
-function TransactionEdit()
-{
-    let id = useParams().id;
-    const [startDate, setStartDate] = useState(new Date());//["", function(){}
-    const [transaction, setTransaction] = useState({});//[{}, function(){}
-    const [isAnticipatedSwitch, setAnticipatedSwitch] = useState(false);//[{}, function(){}
-    const history = useHistory();
-
-    //fetch transaction by id
-    //populate form with transaction data
-    //submit form to update transaction
+function TransactionEdit() {
+    let { id } = useParams();
+    const [startDate, setStartDate] = useState(new Date());
+    const [transaction, setTransaction] = useState({});
+    const [isAnticipatedSwitch, setAnticipatedSwitch] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch(serverUrl + "/transaction/" + id)
@@ -25,24 +19,22 @@ function TransactionEdit()
                 setTransaction(data);
                 setStartDate(data.date);
                 setAnticipatedSwitch(data.isAnticipated ?? false);
-            }
-        );
-    }, []);
+            });
+    }, [id]);
 
     function handleSubmit(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
         const data = Object.fromEntries(formData.entries());
-        data.startDate = '2024-06-01';
-        console.log(isAnticipatedSwitch);
+        data.startDate = startDate;
         data.isAnticipated = isAnticipatedSwitch;
-        console.log(JSON.stringify(data));
-        fetch(serverUrl + "/transaction/", {
+
+        fetch(serverUrl + "/transaction", {
             method: "PUT",
             headers: {
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
         })
             .then((res) => {
                 console.log(res);
@@ -50,24 +42,6 @@ function TransactionEdit()
             .catch((error) => {
                 console.error(error);
             });
-    }
-
-    function formatDate(dateString) {
-        console.log(dateString);
-        const inputDate = new Date(dateString);
-
-        // // Check if the input date is valid
-        // if (isNaN(inputDate.getTime())) {
-        //     throw new Error('Invalid date');
-        // }
-
-        const year = inputDate.getFullYear();
-        const month = String(inputDate.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
-        const day = String(inputDate.getDate()).padStart(2, '0');
-
-        var convertedDate = `${year}-${month}-${day}`;
-        console.log(convertedDate);
-        return convertedDate;
     }
 
     function handleDelete() {
@@ -78,7 +52,7 @@ function TransactionEdit()
             })
             .then(response => {
                 if (response.ok) {
-                    history.push('/transactions'); // Redirect to /transactions
+                    navigate('/transactions'); // Redirect to /transactions
                 }
             })
             .catch(error => {
@@ -90,10 +64,10 @@ function TransactionEdit()
     return (
         <div>
             <h1>{transaction.name}</h1>
-             <Form onSubmit={handleSubmit}>
-             <Row>
-                    <Form.Group as={Col} md="4" >
-                        <Form.Label>Amount</Form.Label>
+            <Form onSubmit={handleSubmit}>
+                <Row>
+                    <Form.Group as={Col} md="4">
+                        <Form.Label>Id</Form.Label>
                         <Form.Control
                             required
                             id="id"
@@ -106,8 +80,8 @@ function TransactionEdit()
                     </Form.Group>
                 </Row>
                 <Row>
-                    <Form.Group as={Col} md="4" >
-                        <Form.Label>Amount</Form.Label>
+                    <Form.Group as={Col} md="4">
+                        <Form.Label>Name</Form.Label>
                         <Form.Control
                             required
                             id="name"
@@ -133,9 +107,8 @@ function TransactionEdit()
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>
                 </Row>
-
                 <Row>
-                    <Form.Group as={Col} md="4" >
+                    <Form.Group as={Col} md="4">
                         <Form.Label>Start Date</Form.Label>
                         <Form.Control
                             required
@@ -149,22 +122,21 @@ function TransactionEdit()
                     </Form.Group>
                 </Row>
                 <Row>
-                    <Form.Group as={Col} md="4" >
-                        <Form.Check // prettier-ignore
+                    <Form.Group as={Col} md="4">
+                        <Form.Check
                             type="switch"
                             id="isAnticipatedSwitch"
                             name="isAnticipatedSwitch"
                             label="Is Anticipated"
                             checked={isAnticipatedSwitch}
-                            onChange={(e) => {console.log(e.target.checked); setAnticipatedSwitch(e.target.checked)}}
+                            onChange={(e) => setAnticipatedSwitch(e.target.checked)}
                         />
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>
                 </Row>
-
-                 <Button type="submit">Submit</Button>
-                 <Button variant="danger" onClick={handleDelete}>Delete</Button>
-             </Form>
+                <Button type="submit">Submit</Button>
+                <Button variant="danger" onClick={handleDelete}>Delete</Button>
+            </Form>
         </div>
     );
 }
