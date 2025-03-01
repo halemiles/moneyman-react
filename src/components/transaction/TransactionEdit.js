@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Form, Row, Col } from "react-bootstrap";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
+import dayjs from 'dayjs';
+import {formatDateToYMD} from '../../logic/DateFormetting';
 
 const serverUrl = process.env.REACT_APP_MONEYMAN_SERVER_URL;
 
 function TransactionEdit() {
     let { id } = useParams();
-    const [startDate, setStartDate] = useState(new Date());
+    const [startDate, setStartDate] = useState("");
     const [transaction, setTransaction] = useState({});
     const [isAnticipatedSwitch, setAnticipatedSwitch] = useState(false);
     const navigate = useNavigate();
@@ -15,9 +21,8 @@ function TransactionEdit() {
         fetch(serverUrl + "/transaction/" + id)
             .then((res) => res.json())
             .then((data) => {
-                console.log(data);
                 setTransaction(data);
-                setStartDate(data.date);
+                setStartDate(formatDateToYMD(data.startDate));
                 setAnticipatedSwitch(data.isAnticipated ?? false);
             });
     }, [id]);
@@ -26,8 +31,8 @@ function TransactionEdit() {
         event.preventDefault();
         const formData = new FormData(event.target);
         const data = Object.fromEntries(formData.entries());
-        data.startDate = startDate;
-        data.isAnticipated = isAnticipatedSwitch;
+        data.StartDate = startDate;
+        data.IsAnticipated = isAnticipatedSwitch;
 
         fetch(serverUrl + "/transaction", {
             method: "PUT",
@@ -36,9 +41,6 @@ function TransactionEdit() {
             },
             body: JSON.stringify(data),
         })
-            .then((res) => {
-                console.log(res);
-            })
             .catch((error) => {
                 console.error(error);
             });
@@ -108,18 +110,21 @@ function TransactionEdit() {
                     </Form.Group>
                 </Row>
                 <Row>
-                    <Form.Group as={Col} md="4">
-                        <Form.Label>Start Date</Form.Label>
-                        <Form.Control
-                            required
+                <Form.Group as={Col} md="12" controlId="startDate">
+                <Form.Label>Amount</Form.Label>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <StaticDatePicker
                             id="startDate"
                             name="startDate"
-                            type="string"
-                            placeholder="Start Date"
-                            defaultValue={startDate}
+                            type="text"
+                            required
+                            value={dayjs(startDate)}
+                            onChange={(e) => setStartDate(formatDateToYMD(e))}
                         />
-                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    </Form.Group>
+                    </LocalizationProvider>
+                </Form.Group>
+
+
                 </Row>
                 <Row>
                     <Form.Group as={Col} md="4">
