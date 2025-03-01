@@ -15,29 +15,49 @@ function Transactions(){
             });
     }, [serverUrl]);
 
+    function deleteTransaction(id) {
+        // ask user to confirm
+        const userConfirmed = window.confirm("Are you sure you want to delete this transaction?");
+        if (!userConfirmed) {
+            return;
+        }
 
-    return(
+
+        fetch(`${serverUrl}/transaction/${id}`, {
+            method: 'DELETE',
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.reload();
+            }
+        })
+    }
+
+
+    return (
         <div>
             <h1>Transactions</h1>
-            <Button id="createButton" href="/transactioncreate">Create transaction</Button>
+            <Button href="/transactioncreate">Add Transaction</Button>
             <Table className="white-table">
                 <thead>
-                <tr>
-                    <th>Transaction Name</th>
-                    <th>Amount</th>
-                    <th>Date</th>
-                    <th>Edit</th>
-                </tr>
+                    <tr>
+                        <th>Transaction Name</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
                 </thead>
                 <tbody>
-                {transactions.map((transaction) => (
-                    <tr key={uuidv4()}>
-                        <td>{transaction.name}</td>
-                        <td>{transaction.amount}</td>
-                        <td>{new Date(transaction.startDate).toLocaleDateString()}</td>
+                    {transactions.map((transaction) => (
+                        <tr key={uuidv4}>
+                            <td>{transaction.name}</td>
+                            <td>{transaction.amount}</td>
+                            <td>{new Date(transaction.startDate).toLocaleDateString()}</td>
                         <td><a href={"/transactionedit/" + transaction.id}>Edit</a></td>
-                    </tr>
-                ))}
+                        <td><Button onClick={() => {deleteTransaction(transaction.id)}}>Delete</Button></td>
+                        </tr>
+                    ))}
                 </tbody>
             </Table>
 
