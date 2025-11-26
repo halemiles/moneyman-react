@@ -71,11 +71,11 @@ function TransactionEdit() {
                     <Form.Group as={Col} md="4">
                         <Form.Label>Id</Form.Label>
                         <Form.Control
-                            required
                             id="id"
                             name="Id"
                             type="text"
                             placeholder="Id"
+                            required
                             defaultValue={transaction.id}
                         />
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
@@ -85,32 +85,32 @@ function TransactionEdit() {
                     <Form.Group as={Col} md="4">
                         <Form.Label>Name</Form.Label>
                         <Form.Control
-                            required
                             id="name"
                             name="Name"
                             type="text"
                             placeholder="Name"
+                            required
                             defaultValue={transaction.name}
                         />
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>
                 </Row>
                 <Row>
-                    <Form.Group as={Col} md="4" controlId="amount">
+                    <Form.Group as={Col} controlId="amount" md="4">
                         <Form.Label>Amount</Form.Label>
                         <Form.Control
-                            required
                             id="amount"
                             name="Amount"
                             type="text"
                             placeholder="Amount"
+                            required
                             defaultValue={transaction.amount}
                         />
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>
                 </Row>
                 <Row>
-                <Form.Group as={Col} md="12" controlId="startDate">
+                <Form.Group as={Col} controlId="startDate" md="12">
                 <Form.Label>Amount</Form.Label>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <StaticDatePicker
@@ -129,9 +129,9 @@ function TransactionEdit() {
                 <Row>
                     <Form.Group as={Col} md="4">
                         <Form.Check
-                            type="switch"
                             id="isAnticipatedSwitch"
                             name="isAnticipatedSwitch"
+                            type="switch"
                             label="Is Anticipated"
                             checked={isAnticipatedSwitch}
                             onChange={(e) => setAnticipatedSwitch(e.target.checked)}
