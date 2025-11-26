@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+      "outDir": "./dist",
+      "strict": true,
+      /* More options here */
+    },
+    "include": ["./src/**/*"],
+    "watchOptions": {
+      "watchFile": "useFsEvents"
+    }
+  }

@@ -1,73 +1,49 @@
-import {useEffect, useHistory, useParams} from "react";
-
-import {useState} from "react";
-import {Button, Form, Row, Col} from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Button, Form, Row, Col } from "react-bootstrap";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
+import dayjs from 'dayjs';
+import {formatDateToYMD} from '../../logic/DateFormetting';
 
 const serverUrl = process.env.REACT_APP_MONEYMAN_SERVER_URL;
 
-function TransactionEdit()
-{
-    let id = useParams().id;
-    const [startDate, setStartDate] = useState(new Date());//["", function(){}
-    const [transaction, setTransaction] = useState({});//[{}, function(){}
-    const [isAnticipatedSwitch, setAnticipatedSwitch] = useState(false);//[{}, function(){}
-    const history = useHistory();
-
-    //fetch transaction by id
-    //populate form with transaction data
-    //submit form to update transaction
+function TransactionEdit() {
+    let { id } = useParams();
+    const [startDate, setStartDate] = useState("");
+    const [transaction, setTransaction] = useState({});
+    const [isAnticipatedSwitch, setAnticipatedSwitch] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch(serverUrl + "/transaction/" + id)
             .then((res) => res.json())
             .then((data) => {
-                console.log(data);
                 setTransaction(data);
-                setStartDate(data.date);
+                setStartDate(formatDateToYMD(data.startDate));
                 setAnticipatedSwitch(data.isAnticipated ?? false);
-            }
-        );
-    }, []);
+            });
+    }, [id]);
 
     function handleSubmit(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
         const data = Object.fromEntries(formData.entries());
-        data.startDate = '2024-06-01';
-        console.log(isAnticipatedSwitch);
-        data.isAnticipated = isAnticipatedSwitch;
-        console.log(JSON.stringify(data));
-        fetch(serverUrl + "/transaction/", {
+        data.StartDate = startDate;
+        data.IsAnticipated = isAnticipatedSwitch;
+
+        fetch(serverUrl + "/transaction", {
             method: "PUT",
             headers: {
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
         })
-            .then((res) => {
-                console.log(res);
-            })
             .catch((error) => {
                 console.error(error);
             });
-    }
-
-    function formatDate(dateString) {
-        console.log(dateString);
-        const inputDate = new Date(dateString);
-
-        // // Check if the input date is valid
-        // if (isNaN(inputDate.getTime())) {
-        //     throw new Error('Invalid date');
-        // }
-
-        const year = inputDate.getFullYear();
-        const month = String(inputDate.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
-        const day = String(inputDate.getDate()).padStart(2, '0');
-
-        var convertedDate = `${year}-${month}-${day}`;
-        console.log(convertedDate);
-        return convertedDate;
     }
 
     function handleDelete() {
@@ -78,7 +54,7 @@ function TransactionEdit()
             })
             .then(response => {
                 if (response.ok) {
-                    history.push('/transactions'); // Redirect to /transactions
+                    navigate('/transactions'); // Redirect to /transactions
                 }
             })
             .catch(error => {
@@ -90,81 +66,82 @@ function TransactionEdit()
     return (
         <div>
             <h1>{transaction.name}</h1>
-             <Form onSubmit={handleSubmit}>
-             <Row>
-                    <Form.Group as={Col} md="4" >
-                        <Form.Label>Amount</Form.Label>
+            <Form onSubmit={handleSubmit}>
+                <Row>
+                    <Form.Group as={Col} md="4">
+                        <Form.Label>Id</Form.Label>
                         <Form.Control
-                            required
                             id="id"
                             name="Id"
                             type="text"
                             placeholder="Id"
+                            required
                             defaultValue={transaction.id}
                         />
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>
                 </Row>
                 <Row>
-                    <Form.Group as={Col} md="4" >
-                        <Form.Label>Amount</Form.Label>
+                    <Form.Group as={Col} md="4">
+                        <Form.Label>Name</Form.Label>
                         <Form.Control
-                            required
                             id="name"
                             name="Name"
                             type="text"
                             placeholder="Name"
+                            required
                             defaultValue={transaction.name}
                         />
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>
                 </Row>
                 <Row>
-                    <Form.Group as={Col} md="4" controlId="amount">
+                    <Form.Group as={Col} controlId="amount" md="4">
                         <Form.Label>Amount</Form.Label>
                         <Form.Control
-                            required
                             id="amount"
                             name="Amount"
                             type="text"
                             placeholder="Amount"
+                            required
                             defaultValue={transaction.amount}
                         />
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>
                 </Row>
-
                 <Row>
-                    <Form.Group as={Col} md="4" >
-                        <Form.Label>Start Date</Form.Label>
-                        <Form.Control
-                            required
+                <Form.Group as={Col} controlId="startDate" md="12">
+                <Form.Label>Amount</Form.Label>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <StaticDatePicker
                             id="startDate"
                             name="startDate"
-                            type="string"
-                            placeholder="Start Date"
-                            defaultValue={startDate}
+                            type="text"
+                            required
+                            value={dayjs(startDate)}
+                            onChange={(e) => setStartDate(formatDateToYMD(e))}
                         />
-                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    </Form.Group>
+                    </LocalizationProvider>
+                </Form.Group>
+
+
                 </Row>
                 <Row>
-                    <Form.Group as={Col} md="4" >
-                        <Form.Check // prettier-ignore
-                            type="switch"
+                    <Form.Group as={Col} md="4">
+                        <Form.Check
                             id="isAnticipatedSwitch"
                             name="isAnticipatedSwitch"
+                            type="switch"
                             label="Is Anticipated"
                             checked={isAnticipatedSwitch}
-                            onChange={(e) => {console.log(e.target.checked); setAnticipatedSwitch(e.target.checked)}}
+                            onChange={(e) => setAnticipatedSwitch(e.target.checked)}
                         />
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>
                 </Row>
-
-                 <Button type="submit">Submit</Button>
-                 <Button variant="danger" onClick={handleDelete}>Delete</Button>
-             </Form>
+                <Button type="submit">Submit</Button>
+                <Button variant="danger" onClick={handleDelete}>Delete</Button>
+            </Form>
         </div>
     );
 }
