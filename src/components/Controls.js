@@ -49,7 +49,7 @@ export default function Controls(props) {
 
     const handleDropdown = async(e) => {
 
-        const data = await handlePostRefresh("http://localhost:5000/dtp?startingValue=1", props.currentBalance, e.target.value);
+        const data = await handlePostRefresh(`${process.env.REACT_APP_MONEYMAN_SERVER_URL}/dtp?startingValue=1`, props.currentBalance, e.target.value);
         if(data) {
             props.sendDataToParent(data.planDates);
         }
@@ -74,4 +74,3 @@ export default function Controls(props) {
         </div>
     );
 }
-
