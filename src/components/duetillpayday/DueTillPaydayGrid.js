@@ -18,6 +18,7 @@ export default function DueTillPaydayGrid() {
 
   const [startDate, setStartDate] = useState('-');
   const [endDate, setEndDate] = useState('-');
+  const [spendPerWeek, setSpendPerWeek] = useState(0);
   const columns = React.useMemo(
      () => [
       {
@@ -67,6 +68,7 @@ export default function DueTillPaydayGrid() {
         setPlanDates(plandates.planDates);
         setStartDate(formatDateToMonthYear(plandates.startDate));
         setEndDate(formatDateToMonthYear(plandates.endDate));
+        setSpendPerWeek(plandates.spendPerWeek.toFixed(2));
         console.log(plandates.planDates);
 
     };
@@ -92,6 +94,7 @@ return (
 
       <p>Start Date: {startDate}</p>
         <p>End Date: {endDate}</p>
+        <p>Burn Rate: {spendPerWeek}</p>
       </Col>
       <Col md={6}>
         <h2>Plan Dates</h2>
