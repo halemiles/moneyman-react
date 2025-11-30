@@ -3,7 +3,7 @@ import Summary from '../Summary.js';
 import Table from 'react-bootstrap/Table';
 import Controls from '../Controls.js';
 import '../Table.css'
-import {handlePostRefresh} from "../../data/DutTillPayday.ts";
+import {handlePostRefresh} from "../../data/DutTillPayday";
 import {Row, Col} from 'react-bootstrap';
 import { useTable, useSortBy } from 'react-table';
 import { formatDateToMonthYear } from '../../logic/DateFormetting.js';
