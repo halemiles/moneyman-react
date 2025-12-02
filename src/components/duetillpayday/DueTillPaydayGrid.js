@@ -25,12 +25,55 @@ export default function DueTillPaydayGrid() {
   const [burnPerDay, setBurnPerDay] = useState(0);
   // Current balance (editable by user via Controls)
   const [currentBalance, setCurrentBalance] = useState(null);
+  // Computed remaining after subtracting due items (currentBalance - totalDue)
+  const [remainingAmount, setRemainingAmount] = useState(null);
 
   // Helper to ensure each plan date has a formattedDate property
   const normalizePlanDates = (items) => {
     if (!Array.isArray(items)) return [];
     return items.map(item => ({ ...item, formattedDate: formatDateToMonthYear(item.date) }));
   }
+
+  // Helper to compute total due between now and the provided end date (inclusive)
+  const computeTotalDueUntil = (items, end) => {
+    if (!Array.isArray(items) || items.length === 0) return 0;
+    const endDateObj = end ? new Date(end) : null;
+    const now = new Date();
+    // normalize to midnight for comparisons
+    if (endDateObj) endDateObj.setHours(0,0,0,0);
+    now.setHours(0,0,0,0);
+
+    return items.reduce((acc, item) => {
+      const itemDate = item && item.date ? new Date(item.date) : null;
+      if (!itemDate) return acc;
+      itemDate.setHours(0,0,0,0);
+      // include items from today up to and including end date (if an end date is provided)
+      const withinRange = (!endDateObj && itemDate >= now) || (endDateObj && itemDate >= now && itemDate <= endDateObj);
+      if (!withinRange) return acc;
+      const amt = Number(item.amount) || 0;
+      return acc + amt;
+    }, 0);
+  }
+
+  // Helper to compute remaining: (currentBalance - totalDueUntilEnd)
+  const computeRemainingFromPlanDates = (balance, items, end) => {
+    const bal = Number(balance ?? 0) || 0;
+    const totalDue = computeTotalDueUntil(items, end);
+    return bal - totalDue;
+  }
+
+  // Handler used by the action Cell in the table columns; declare before columns so it's available
+  const handleEdit = (original) => {
+    console.log(original);
+    setPlanDates(planDates.filter((v, i) => i !== original));
+  }
+
+  // Named cell renderer so static analyzers don't flag the inline property as unused
+  const ActionCell = ({ row }) => (
+    <div>
+      <button onClick={() => handleEdit(row.index)}>Edit</button>
+    </div>
+  );
 
   /** @type {any[]} */
   const columns = React.useMemo(
@@ -57,20 +100,11 @@ export default function DueTillPaydayGrid() {
       {
         Header: 'Action',
         id: 'action',
-        Cell: row => (
-          <div>
-             <button onClick={() => handleEdit(row.row.index)}>Edit</button>
-          </div>
-          ),
+        Cell: ActionCell,
       }
-    ],
-    []
-  )
-
-  const handleEdit = (original) => {
-    console.log(original);
-    setPlanDates(planDates.filter((v, i) => i !== original));
-  }
+     ],
+     []
+   )
 
   const data = React.useMemo(() => planDates, [planDates]);
   const {
@@ -115,12 +149,22 @@ export default function DueTillPaydayGrid() {
         // Save raw end date for recalculation
         setRawEndDate(plandates.endDate ?? plandates.enddate ?? null);
 
-        // Determine remaining amount preference: if the API supplies a remaining value use it, otherwise fall back to currentBalance if set
-        const apiRemaining = Number(plandates.remainingAmount ?? plandates.remaining ?? plandates.remainingBalance ?? plandates.remaining_amount ?? plandates.remainingAmt ?? plandates.remainingAmtInPence ?? null);
-        const remainingToUse = !isNaN(apiRemaining) && apiRemaining !== null ? apiRemaining : (currentBalance ?? 0);
+        // Determine remaining amount preference: if the API supplies a remaining value use it, otherwise compute remaining as (currentBalance - total due)
+        const apiRemainingCandidate = plandates.remainingAmount ?? plandates.remaining ?? plandates.remainingBalance ?? plandates.remaining_amount ?? plandates.remainingAmt ?? plandates.remainingAmtInPence ?? null;
+        const apiRemaining = apiRemainingCandidate != null ? Number(apiRemainingCandidate) : NaN;
+        let remainingToUse;
+        if (!isNaN(apiRemaining)) {
+          remainingToUse = apiRemaining;
+        } else {
+          // compute remaining by subtracting planned dues up to the end date from the current balance
+          remainingToUse = computeRemainingFromPlanDates(currentBalance ?? 0, plandates.planDates ?? [], plandates.endDate ?? plandates.enddate ?? null);
+        }
+
+        // persist the remaining value we used so the UI can show it and we can recompute from it
+        setRemainingAmount(remainingToUse);
 
         computeBurnRates(remainingToUse, plandates.endDate ?? plandates.enddate ?? null);
-        console.log(plandates.planDates);
+         console.log(plandates.planDates);
 
     };
 
@@ -133,14 +177,18 @@ useEffect(() => {
   // Here we attempt to read remaining from the last fetched planDates via rawEndDate and planDates state isn't directly giving remaining, so we re-call the API outcome's field where possible.
   // Simplify: recompute using currentBalance and rawEndDate; if API provided a remaining and it's different you can click Refresh to re-fetch.
   if (rawEndDate) {
-    computeBurnRates(currentBalance ?? 0, rawEndDate);
+    const remaining = computeRemainingFromPlanDates(currentBalance ?? 0, planDates ?? [], rawEndDate);
+    setRemainingAmount(remaining);
+    computeBurnRates(remaining, rawEndDate);
   }
 }, [currentBalance, rawEndDate]);
 
 // Also recompute when planDates change (e.g., user switches accounts or the plan updates)
 useEffect(() => {
   if (rawEndDate) {
-    computeBurnRates(currentBalance ?? 0, rawEndDate);
+    const remaining = computeRemainingFromPlanDates(currentBalance ?? 0, planDates ?? [], rawEndDate);
+    setRemainingAmount(remaining);
+    computeBurnRates(remaining, rawEndDate);
   }
 }, [planDates, rawEndDate]);
 
@@ -162,6 +210,7 @@ useEffect(() => {
       <Col md={3}>
       <Summary planDates={planDates} currentBalance={currentBalance} onCurrentBalanceChange={setCurrentBalance} />
 
+      <p>Remaining: £{remainingAmount}</p>
       <p>Start Date: {startDate}</p>
         <p>End Date: {endDate}</p>
         <p>Burn Rate (weekly): £{burnPerWeek}</p>
