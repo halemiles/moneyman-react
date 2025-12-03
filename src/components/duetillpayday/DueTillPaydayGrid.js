@@ -63,19 +63,77 @@ export default function DueTillPaydayGrid() {
   }
 
   // Handler used by the action Cell in the table columns; declare before columns so it's available
-  const handleEdit = (original) => {
-    console.log(original);
-    setPlanDates(planDates.filter((v, i) => i !== original));
-  }
+  const handleHide = (row) => {
+    // Accept the react-table row object so we can prefer identity-based removal
+    if (!row || !row.original) {
+      console.warn("handleHide called without a valid table row");
+      return;
+    }
+    const originalItem = row.original;
+    console.log("Hiding item", originalItem);
 
+    // Helper functions for fallback matching
+    const parseTime = (val) => {
+      if (!val) return NaN;
+      if (typeof val === 'number') return val;
+      const asDate = Date.parse(val);
+      if (!isNaN(asDate)) return asDate;
+      if (val && typeof val === 'object' && val.date) return Date.parse(val.date) || NaN;
+      return NaN;
+    };
+    const normalizeName = (n) => (n == null ? '' : String(n).trim().toLowerCase());
+    const parseAmount = (a) => {
+      const num = Number(a);
+      return isNaN(num) ? null : num;
+    };
+
+    // Use functional update to avoid stale closures and ensure we operate on latest state
+    setPlanDates(prev => {
+      // Try identity first (fast and exact)
+      let idx = prev.findIndex(item => item === originalItem);
+
+      // Fallback: match by stable fields (date OR amount+name)
+      if (idx === -1) {
+        const targetTime = parseTime(originalItem.date ?? originalItem.formattedDate ?? originalItem);
+        const targetAmount = parseAmount(originalItem.amount);
+        const targetName = normalizeName(originalItem.transactionName ?? originalItem.name ?? originalItem.transactionname ?? '');
+
+        idx = prev.findIndex(item => {
+          const itemTime = parseTime(item.date ?? item.formattedDate ?? item);
+          if (!isNaN(itemTime) && !isNaN(targetTime) && itemTime === targetTime) return true;
+
+          const itemAmount = parseAmount(item.amount);
+          const itemName = normalizeName(item.transactionName ?? item.name ?? item.transactionname ?? '');
+          if (targetAmount != null && itemAmount != null && targetAmount === itemAmount && targetName === itemName) return true;
+
+          return false;
+        });
+      }
+
+      if (idx === -1) {
+        console.warn("handleHide: could not find matching item to hide; aborting");
+        return prev;
+      }
+
+      const next = [...prev.slice(0, idx), ...prev.slice(idx + 1)];
+
+      // Recalculate remaining and burn rates based on the new list
+      const remaining = computeRemainingFromPlanDates(currentBalance ?? 0, next ?? [], rawEndDate);
+      setRemainingAmount(remaining);
+      computeBurnRates(remaining, rawEndDate);
+
+      return next;
+    });
+  }
+ 
   // Named cell renderer so static analyzers don't flag the inline property as unused
   const ActionCell = ({ row }) => (
     <div>
-      <button onClick={() => handleEdit(row.index)}>Edit</button>
+      <button type="button" className="btn btn-secondary" onClick={() => handleHide(row)}>Hide</button>
     </div>
   );
-
-  /** @type {any[]} */
+ 
+   /** @type {any[]} */
   const columns = React.useMemo(
      () => [
       {
