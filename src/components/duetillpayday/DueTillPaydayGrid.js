@@ -7,6 +7,7 @@ import {handlePostRefresh} from "../../data/DutTillPayday";
 import {Row, Col} from 'react-bootstrap';
 import { useTable, useSortBy } from 'react-table';
 import { formatDateToMonthYear } from '../../logic/DateFormetting.js';
+import { normalizePlanDates as _normalizePlanDates, parseTime, normalizeName, parseAmount, computeRemainingFromPlanDates, computeBurnRates } from './dtpHelpers.js';
 
 
 
@@ -29,98 +30,57 @@ export default function DueTillPaydayGrid() {
   const [remainingAmount, setRemainingAmount] = useState(null);
 
   // Helper to ensure each plan date has a formattedDate property
-  const normalizePlanDates = (items) => {
-    if (!Array.isArray(items)) return [];
-    return items.map(item => ({ ...item, formattedDate: formatDateToMonthYear(item.date) }));
-  }
+  //  const normalizePlanDates = (items) => {
+  //    if (!Array.isArray(items)) return [];
+  //    return items.map(item => ({ ...item, formattedDate: formatDateToMonthYear(item.date) }));
+  //  }
+  // use extracted normalizePlanDates helper
+  const normalizePlanDates = (items) => _normalizePlanDates(items);
 
   // Helper to compute total due between now and the provided end date (inclusive)
-  const computeTotalDueUntil = (items, end) => {
-    if (!Array.isArray(items) || items.length === 0) return 0;
-    const endDateObj = end ? new Date(end) : null;
-    const now = new Date();
-    // normalize to midnight for comparisons
-    if (endDateObj) endDateObj.setHours(0,0,0,0);
-    now.setHours(0,0,0,0);
-
-    return items.reduce((acc, item) => {
-      const itemDate = item && item.date ? new Date(item.date) : null;
-      if (!itemDate) return acc;
-      itemDate.setHours(0,0,0,0);
-      // include items from today up to and including end date (if an end date is provided)
-      const withinRange = (!endDateObj && itemDate >= now) || (endDateObj && itemDate >= now && itemDate <= endDateObj);
-      if (!withinRange) return acc;
-      const amt = Number(item.amount) || 0;
-      return acc + amt;
-    }, 0);
-  }
+  //  const computeTotalDueUntil = (items, end) => {
+  //    if (!Array.isArray(items) || items.length === 0) return 0;
+  //    const endDateObj = end ? new Date(end) : null;
+  //    const now = new Date();
+  //    // normalize to midnight for comparisons
+  //    if (endDateObj) endDateObj.setHours(0,0,0,0);
+  //    now.setHours(0,0,0,0);
+  //
+  //    return items.reduce((acc, item) => {
+  //      const itemDate = item && item.date ? new Date(item.date) : null;
+  //      if (!itemDate) return acc;
+  //      itemDate.setHours(0,0,0,0);
+  //      // include items from today up to and including end date (if an end date is provided)
+  //      const withinRange = (!endDateObj && itemDate >= now) || (endDateObj && itemDate >= now && itemDate <= endDateObj);
+  //      if (!withinRange) return acc;
+  //      const amt = Number(item.amount) || 0;
+  //      return acc + amt;
+  //    }, 0);
+  //  }
+  // use computeTotalDueUntil from helpers when needed
 
   // Helper to compute remaining: (currentBalance - totalDueUntilEnd)
-  const computeRemainingFromPlanDates = (balance, items, end) => {
-    const bal = Number(balance ?? 0) || 0;
-    const totalDue = computeTotalDueUntil(items, end);
-    return bal - totalDue;
-  }
+  //  const computeRemainingFromPlanDates = (balance, items, end) => {
+  //    const bal = Number(balance ?? 0) || 0;
+  //    const totalDue = computeTotalDueUntil(items, end);
+  //    return bal - totalDue;
+  //  }
+  // use computeRemainingFromPlanDates from helpers when needed
 
   // Handler used by the action Cell in the table columns; declare before columns so it's available
   const handleHide = (row) => {
-    // Accept the react-table row object so we can prefer identity-based removal
-    if (!row || !row.original) {
-      console.warn("handleHide called without a valid table row");
-      return;
-    }
     const originalItem = row.original;
-    console.log("Hiding item", originalItem);
 
-    // Helper functions for fallback matching
-    const parseTime = (val) => {
-      if (!val) return NaN;
-      if (typeof val === 'number') return val;
-      const asDate = Date.parse(val);
-      if (!isNaN(asDate)) return asDate;
-      if (val && typeof val === 'object' && val.date) return Date.parse(val.date) || NaN;
-      return NaN;
-    };
-    const normalizeName = (n) => (n == null ? '' : String(n).trim().toLowerCase());
-    const parseAmount = (a) => {
-      const num = Number(a);
-      return isNaN(num) ? null : num;
-    };
+    // Use shared helpers (parseTime, normalizeName, parseAmount) for matching
 
     // Use functional update to avoid stale closures and ensure we operate on latest state
     setPlanDates(prev => {
       // Try identity first (fast and exact)
       let idx = prev.findIndex(item => item === originalItem);
-
-      // Fallback: match by stable fields (date OR amount+name)
-      if (idx === -1) {
-        const targetTime = parseTime(originalItem.date ?? originalItem.formattedDate ?? originalItem);
-        const targetAmount = parseAmount(originalItem.amount);
-        const targetName = normalizeName(originalItem.transactionName ?? originalItem.name ?? originalItem.transactionname ?? '');
-
-        idx = prev.findIndex(item => {
-          const itemTime = parseTime(item.date ?? item.formattedDate ?? item);
-          if (!isNaN(itemTime) && !isNaN(targetTime) && itemTime === targetTime) return true;
-
-          const itemAmount = parseAmount(item.amount);
-          const itemName = normalizeName(item.transactionName ?? item.name ?? item.transactionname ?? '');
-          if (targetAmount != null && itemAmount != null && targetAmount === itemAmount && targetName === itemName) return true;
-
-          return false;
-        });
-      }
-
-      if (idx === -1) {
-        console.warn("handleHide: could not find matching item to hide; aborting");
-        return prev;
-      }
+      
 
       const next = [...prev.slice(0, idx), ...prev.slice(idx + 1)];
 
-      // Recalculate remaining and burn rates based on the new list
-      const remaining = computeRemainingFromPlanDates(currentBalance ?? 0, next ?? [], rawEndDate);
-      setRemainingAmount(remaining);
-      computeBurnRates(remaining, rawEndDate);
 
       return next;
     });
@@ -173,30 +133,6 @@ export default function DueTillPaydayGrid() {
     prepareRow,
   } = useTable({ columns, data, initialState: { sortBy: [{ id: 'formattedDate', desc: false }] } }, useSortBy);
 
-  // Helper to compute burn rates from remaining (or balance) and end date
-  const computeBurnRates = (remainingValue, end) => {
-    const remaining = Number(remainingValue ?? 0) || 0;
-    if (!end || isNaN(new Date(end).getTime())) {
-      setBurnPerWeek(0);
-      setBurnPerDay(0);
-      return;
-    }
-
-    const endDateObj = new Date(end);
-    const msPerDay = 24 * 60 * 60 * 1000;
-    const now = new Date();
-    const rawDays = Math.ceil((new Date(endDateObj.setHours(0,0,0,0)) - new Date(now.setHours(0,0,0,0))) / msPerDay);
-    const daysRemaining = Math.max(rawDays, 0);
-    const weeksRemaining = Math.max(Math.ceil(daysRemaining / 7), 1);
-    const daysForCalc = Math.max(daysRemaining, 1);
-
-    const weekly = Math.floor(remaining / weeksRemaining);
-    const daily = Math.floor(remaining / daysForCalc);
-
-    setBurnPerWeek(weekly);
-    setBurnPerDay(daily);
-  }
-
   useEffect(() => {
     const fetchData = async () => {
         const plandates = await handlePostRefresh(`${process.env.REACT_APP_MONEYMAN_SERVER_URL}/dtp/current?startingvalue=1`, 500);
@@ -221,7 +157,9 @@ export default function DueTillPaydayGrid() {
         // persist the remaining value we used so the UI can show it and we can recompute from it
         setRemainingAmount(remainingToUse);
 
-        computeBurnRates(remainingToUse, plandates.endDate ?? plandates.enddate ?? null);
+        const rates = computeBurnRates(remainingToUse, plandates.endDate ?? plandates.enddate ?? null);
+        setBurnPerWeek(rates.burnPerWeek);
+        setBurnPerDay(rates.burnPerDay);
          console.log(plandates.planDates);
 
     };
@@ -237,7 +175,9 @@ useEffect(() => {
   if (rawEndDate) {
     const remaining = computeRemainingFromPlanDates(currentBalance ?? 0, planDates ?? [], rawEndDate);
     setRemainingAmount(remaining);
-    computeBurnRates(remaining, rawEndDate);
+    const rates = computeBurnRates(remaining, rawEndDate);
+    setBurnPerWeek(rates.burnPerWeek);
+    setBurnPerDay(rates.burnPerDay);
   }
 }, [currentBalance, rawEndDate]);
 
@@ -246,7 +186,9 @@ useEffect(() => {
   if (rawEndDate) {
     const remaining = computeRemainingFromPlanDates(currentBalance ?? 0, planDates ?? [], rawEndDate);
     setRemainingAmount(remaining);
-    computeBurnRates(remaining, rawEndDate);
+    const rates = computeBurnRates(remaining, rawEndDate);
+    setBurnPerWeek(rates.burnPerWeek);
+    setBurnPerDay(rates.burnPerDay);
   }
 }, [planDates, rawEndDate]);
 
