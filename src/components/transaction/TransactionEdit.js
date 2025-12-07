@@ -16,16 +16,33 @@ function TransactionEdit() {
     const [transaction, setTransaction] = useState({});
     const [isAnticipatedSwitch, setAnticipatedSwitch] = useState(false);
     const [frequency, setFrequency] = useState(0); // Default to Yearly
+    const [active, setActive] = useState(false); // Default to inactive
+    const [planDates, setPlanDates] = useState([]); // State for storing plan dates
     const navigate = useNavigate();
 
     useEffect(() => {
+        // Fetch transaction details
         fetch(serverUrl + "/transaction/" + id)
             .then((res) => res.json())
             .then((data) => {
                 setTransaction(data);
                 setStartDate(formatDateToYMD(data.startDate));
                 setAnticipatedSwitch(data.isAnticipated ?? false);
-                setFrequency(data.frequency ?? 0); // Set frequency from fetched data
+                setFrequency(data.frequency ?? 0);
+                setActive(data.active ?? false);
+
+                // Fetch plan dates for the transaction
+                fetch(`${serverUrl}/plandate/search?transactionname=${data.name}`)
+                    .then((res) => res.json())
+                    .then((dates) => {
+                        const today = dayjs();
+                        const filteredDates = dates
+                            .filter((plan) => dayjs(plan.date).isAfter(today)) // Keep only future dates
+                            .sort((a, b) => dayjs(a.date).diff(dayjs(b.date))) // Sort by date ascending
+                            .slice(0, 5); // Limit to next 5 dates
+                        setPlanDates(filteredDates);
+                    })
+                    .catch((error) => console.error("Error fetching plan dates:", error));
             });
     }, [id]);
 
@@ -36,6 +53,7 @@ function TransactionEdit() {
         data.StartDate = startDate;
         data.IsAnticipated = isAnticipatedSwitch;
         data.Frequency = frequency; // Ensure frequency is sent as an integer
+        data.active = active; // Ensure active status is sent to the server
 
         fetch(serverUrl + "/transaction", {
             method: "PUT",
@@ -74,11 +92,16 @@ function TransactionEdit() {
     return (
         <div>
             <h1>{transaction.name}</h1>
-            <Form onSubmit={handleSubmit}>
+
+            <div className="d-flex justify-content-between mb-3"> {/* Top buttons */}
+                <Button type="submit" variant="primary" form="transactionForm">Save</Button>
+                <Button variant="danger" onClick={handleDelete}>Delete</Button>
+            </div>
+            <Form id="transactionForm" onSubmit={handleSubmit}>
                 <Row>
-                    <Col md={8}> {/* Left column */}
+                    <Col md={4}> {/* Column 1: Main Fields */}
                         <Row>
-                            <Form.Group as={Col} md="4">
+                            <Form.Group as={Col} md="12">
                                 <Form.Label>Id</Form.Label>
                                 <Form.Control
                                     id="id"
@@ -88,11 +111,10 @@ function TransactionEdit() {
                                     required
                                     defaultValue={transaction.id}
                                 />
-                                <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                             </Form.Group>
                         </Row>
                         <Row>
-                            <Form.Group as={Col} md="4">
+                            <Form.Group as={Col} md="12">
                                 <Form.Label>Name</Form.Label>
                                 <Form.Control
                                     id="name"
@@ -102,11 +124,10 @@ function TransactionEdit() {
                                     required
                                     defaultValue={transaction.name}
                                 />
-                                <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                             </Form.Group>
                         </Row>
                         <Row>
-                            <Form.Group as={Col} controlId="amount" md="4">
+                            <Form.Group as={Col} md="12">
                                 <Form.Label>Amount</Form.Label>
                                 <Form.Control
                                     id="amount"
@@ -116,11 +137,10 @@ function TransactionEdit() {
                                     required
                                     defaultValue={transaction.amount}
                                 />
-                                <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                             </Form.Group>
                         </Row>
                         <Row>
-                            <Form.Group as={Col} md="4">
+                            <Form.Group as={Col} md="12">
                                 <Form.Label>Frequency</Form.Label>
                                 <Form.Control
                                     as="select"
@@ -138,7 +158,7 @@ function TransactionEdit() {
                             </Form.Group>
                         </Row>
                         <Row>
-                            <Form.Group as={Col} md="4">
+                            <Form.Group as={Col} md="12">
                                 <Form.Check
                                     id="isAnticipatedSwitch"
                                     name="isAnticipatedSwitch"
@@ -147,11 +167,23 @@ function TransactionEdit() {
                                     checked={isAnticipatedSwitch}
                                     onChange={(e) => setAnticipatedSwitch(e.target.checked)}
                                 />
-                                <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                            </Form.Group>
+                        </Row>
+                        <Row>
+                            <Form.Group as={Col} md="12">
+                                <Form.Check
+                                    id="active"
+                                    name="active"
+                                    type="switch"
+                                    label="Active"
+                                    checked={active}
+                                    onChange={(e) => setActive(e.target.checked)}
+                                />
                             </Form.Group>
                         </Row>
                     </Col>
-                    <Col md={4}> {/* Right column */}
+
+                    <Col md={4}> {/* Column 2: Dates */}
                         <Row>
                             <Form.Group as={Col} controlId="startDate" md="12">
                                 <Form.Label>Start Date</Form.Label>
@@ -168,9 +200,33 @@ function TransactionEdit() {
                             </Form.Group>
                         </Row>
                     </Col>
+
+                    <Col md={4}> {/* Column 3: Plan Dates */}
+                        <Row>
+                            <Form.Group as={Col} controlId="planDates" md="12">
+                                <Form.Label>Plan Dates</Form.Label>
+                                <table className="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Original Date</th>
+                                            <th>Active</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {planDates.map((plan, index) => (
+                                            <tr key={index}>
+                                                <td>{dayjs(plan.date).format('YYYY-MM-DD')}</td>
+                                                <td>{dayjs(plan.originalDate).format('YYYY-MM-DD')}</td>
+                                                <td>{plan.active ? 'Yes' : 'No'}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </Form.Group>
+                        </Row>
+                    </Col>
                 </Row>
-                <Button type="submit">Submit</Button>
-                <Button variant="danger" onClick={handleDelete}>Delete</Button>
             </Form>
         </div>
     );
