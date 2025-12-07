@@ -1,6 +1,7 @@
 import {Table, Button} from "react-bootstrap";
 import React, {useState, useEffect} from "react";
 import { v4 as uuidv4 } from 'uuid';
+import { Frequency } from "../../models/Frequency";
 
 
 const serverUrl = process.env.REACT_APP_MONEYMAN_SERVER_URL;
@@ -44,6 +45,8 @@ function Transactions(){
                         <th>Transaction Name</th>
                         <th>Amount</th>
                         <th>Date</th>
+                        <th>Active</th>
+                        <th>Frequency</th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -52,10 +55,12 @@ function Transactions(){
                     {transactions.map((transaction) => (
                         <tr key={uuidv4}>
                             <td>{transaction.name}</td>
-                            <td>{transaction.amount}</td>
+                            <td>£{transaction.amount.toLocaleString()}</td>
                             <td>{new Date(transaction.startDate).toLocaleDateString()}</td>
-                        <td><a href={"/transactionedit/" + transaction.id}>Edit</a></td>
-                        <td><Button onClick={() => {deleteTransaction(transaction.id)}}>Delete</Button></td>
+                            <td>{transaction.active ? "✅" : ""}</td>
+                            <td>{Frequency[transaction.frequency]}</td>
+                        <td><a href={"/transactionedit/" + transaction.id} className="btn btn-primary">Edit</a></td>
+                        <td><Button onClick={() => {deleteTransaction(transaction.id)}} className="btn-danger">Delete</Button></td>
                         </tr>
                     ))}
                 </tbody>
