@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -208,6 +208,7 @@ function TransactionEdit() {
                                 <table className="table table-bordered">
                                     <thead>
                                         <tr>
+                                            <th>Name</th>
                                             <th>Date</th>
                                             <th>Original Date</th>
                                             <th>Active</th>
@@ -216,6 +217,11 @@ function TransactionEdit() {
                                     <tbody>
                                         {planDates.map((plan, index) => (
                                             <tr key={index}>
+                                                <td>
+                                                    <Link to={`/transaction/edit/${plan.transaction.id}`}>
+                                                        {plan.transaction.name}
+                                                    </Link>
+                                                </td>
                                                 <td>{dayjs(plan.date).format('YYYY-MM-DD')}</td>
                                                 <td>{dayjs(plan.originalDate).format('YYYY-MM-DD')}</td>
                                                 <td>{plan.active ? 'Yes' : 'No'}</td>

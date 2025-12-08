@@ -3,6 +3,7 @@ import Summary from '../Summary.js';
 import Table from 'react-bootstrap/Table';
 import Controls from '../Controls.js';
 import '../Table.css'
+import './DueTillPaydayGrid.css';
 import {handlePostRefresh} from "../../data/DutTillPayday";
 import {Row, Col} from 'react-bootstrap';
 import { useTable, useSortBy } from 'react-table';
@@ -77,7 +78,7 @@ export default function DueTillPaydayGrid() {
     setPlanDates(prev => {
       // Try identity first (fast and exact)
       let idx = prev.findIndex(item => item === originalItem);
-      
+
 
       const next = [...prev.slice(0, idx), ...prev.slice(idx + 1)];
 
@@ -85,14 +86,14 @@ export default function DueTillPaydayGrid() {
       return next;
     });
   }
- 
+
   // Named cell renderer so static analyzers don't flag the inline property as unused
   const ActionCell = ({ row }) => (
     <div>
       <button type="button" className="btn btn-secondary" onClick={() => handleHide(row)}>Hide</button>
     </div>
   );
- 
+
    /** @type {any[]} */
   const columns = React.useMemo(
      () => [
@@ -208,15 +209,17 @@ useEffect(() => {
      </Row>
      <Row>
       <Col md={3}>
-      <Summary planDates={planDates} currentBalance={currentBalance} onCurrentBalanceChange={setCurrentBalance} />
-
-      <p>Remaining: £{remainingAmount}</p>
-      <p>Start Date: {startDate}</p>
-        <p>End Date: {endDate}</p>
-        <p>Burn Rate (weekly): £{burnPerWeek}</p>
-        <p>Burn Rate (daily): £{burnPerDay}</p>
+      <Summary
+        planDates={planDates}
+        currentBalance={currentBalance}
+        onCurrentBalanceChange={setCurrentBalance}
+        startDate={startDate}
+        endDate={endDate}
+        burnPerWeek={burnPerWeek}
+        burnPerDay={burnPerDay}
+      />
       </Col>
-      <Col md={6}>
+      <Col md={9}>
         <h2>Plan Dates</h2>
         <Table {...getTableProps()}>
           <thead>
@@ -235,7 +238,7 @@ useEffect(() => {
                           column.render("Header")
                         }
                         <span>
-                            {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}
+                          {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}
                         </span>
                       </th>
                     ))
@@ -248,22 +251,19 @@ useEffect(() => {
           {/* Apply the table body props */}
 
           <tbody {...getTableBodyProps()}>
-            {rows.map(
-              (row) => {
-                prepareRow(row);
-                return (
-                  <tr {...row.getRowProps()}>
-                    {row.cells.map(cell => {
-                      return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                    })}
-                  </tr>
-                )
+            {rows.map((row) => {
+              prepareRow(row);
+              return (
+                <tr {...row.getRowProps()}>
+                  {row.cells.map((cell) => {
+                    return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
+                  })}
+                </tr>
+              );
             })}
           </tbody>
         </Table>
-
       </Col>
-
     </Row>
   </div>
 );
