@@ -1,0 +1,88 @@
+name: Build and Release Docker Image
+
+on:
+  push:
+    branches:
+      - master
+      - development
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/master' }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Generate release tag
+        id: release_tag
+        run: |
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          TIMESTAMP=$(date +'%Y%m%d-%H%M%S')
+          echo "tag=${BRANCH_NAME}-${TIMESTAMP}" >> $GITHUB_OUTPUT
+          echo "branch=${BRANCH_NAME}" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.release_tag.outputs.tag }}
+          release_name: Release ${{ steps.release_tag.outputs.tag }}
+          body: |
+            ## Docker Image
+            
+            Pull the Docker image with:
+            ```bash
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.release_tag.outputs.branch }}
+            ```
+            
+            Or pull by commit SHA:
+            ```bash
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.release_tag.outputs.branch }}-${{ github.sha }}
+            ```
+            
+            ## Changes
+            This release was automatically created from branch `${{ steps.release_tag.outputs.branch }}`.
+            
+            **Commit**: ${{ github.sha }}
+            **Author**: ${{ github.actor }}
+          draft: false
+          prerelease: ${{ steps.release_tag.outputs.branch == 'development' }}

@@ -7,18 +7,15 @@ WORKDIR /app
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
+# Install dependencies
+RUN npm ci --only=production=false
+
 # Copy app source code
 COPY . .
 
-# Install dependencies
-RUN npm install
+# Expose port 3000 (React default port)
+EXPOSE 3000
 
-# Build app
-#RUN npm run build
-
-# Expose port 3002
-EXPOSE 3002
-
-# Start app
+# Start app in development mode
 CMD ["npm", "start"]
 
