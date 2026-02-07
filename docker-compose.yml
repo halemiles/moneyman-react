@@ -4,8 +4,11 @@ version: '3.8'
 services:
   moneyman-react:
     container_name: moneyman-react
+    # Use this to build locally:
     build:
       context: .
       dockerfile: Dockerfile
+    # Or uncomment to use published image from GitHub Container Registry:
+    # image: ghcr.io/halemiles/moneyman-react:master
     ports:
-      - "3002:3000"
+      - "3000:3000"

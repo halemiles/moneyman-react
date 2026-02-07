@@ -2,6 +2,31 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Docker
+
+Docker images are automatically built and published to GitHub Container Registry on every push to `master` or `development` branches.
+
+### Pull and Run the Latest Image
+
+#### From master branch:
+```bash
+docker pull ghcr.io/halemiles/moneyman-react:master
+docker run -p 3000:3000 ghcr.io/halemiles/moneyman-react:master
+```
+
+#### From development branch:
+```bash
+docker pull ghcr.io/halemiles/moneyman-react:development
+docker run -p 3000:3000 ghcr.io/halemiles/moneyman-react:development
+```
+
+#### Using docker-compose:
+```bash
+docker-compose up
+```
+
+The app will be available at [http://localhost:3000](http://localhost:3000).
+
 ## Available Scripts
 
 In the project directory, you can run:
