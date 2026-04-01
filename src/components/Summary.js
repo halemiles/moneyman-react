@@ -19,14 +19,22 @@ export default function Summary(props) {
         });
       }
       //setActual(process.env.REACT_APP_MONTHLY_INCOME - totalDue);
+      // Prefer the externally provided current balance if present, otherwise use the local actual state
+      const actualVal = Number(props.currentBalance ?? actual) || 0;
       setDue(totalDue.toFixed(2));
-      setRemaining((actual - totalDue).toFixed(2));
-    }, [props.planDates, actual]);
+      setRemaining((actualVal - totalDue).toFixed(2));
+      //setSpendPerWeek(props.spendPerWeek.toFixed(2));
+    }, [props.planDates, actual, props.currentBalance]);
 
+    // When user edits the Current balance control we update local state and notify parent via props.onCurrentBalanceChange
     const handleActualChange = (e) => {
-      setActual(e.target.value);
+      const val = e.target.value;
+      setActual(val);
+      if (props.onCurrentBalanceChange) {
+        const num = val === '' ? null : Number(val);
+        props.onCurrentBalanceChange(num);
+      }
     };
-
 
 
   return (
@@ -37,7 +45,7 @@ export default function Summary(props) {
           <Form.Group controlId="actualValue" as={Row} className="mb-3">
             <InputGroup>
               <InputGroup.Text>Current balance</InputGroup.Text>
-              <Form.Control aria-label="Current balance" type="number" step="1" value={actual}   onChange={handleActualChange}/>
+              <Form.Control aria-label="Current balance" type="number" step="1" value={props.currentBalance ?? actual}   onChange={handleActualChange}/>
             </InputGroup>
         </Form.Group>
         </Form>

@@ -3,6 +3,7 @@ import DueTillPaydayGrid from "./duetillpayday/DueTillPaydayGrid";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomeDashboard from './home/HomeDashboard'
 import Transactions from "./transaction/Transactions";
+import AnticipatedTransactions from "./transaction/AnticipatedTransactions";
 import Header from "./Header";
 import TransactionEdit from "./transaction/TransactionEdit";
 import TransactionCreate from "./transaction/TransactionCreate";
@@ -18,6 +19,7 @@ function Layout() {
             <Route path="/home" element={<HomeDashboard />} />
             <Route path="/duetillpayday" element={<DueTillPaydayGrid />} />
             <Route path="/transactions" element={<Transactions />} />
+            <Route path="/anticipatedtransactions" element={<AnticipatedTransactions />} />
             <Route path="/about" element={<About />} />
             <Route path="/transactionedit/:id" element={<TransactionEdit />} />
             <Route path="/transactioncreate" element={<TransactionCreate />} />

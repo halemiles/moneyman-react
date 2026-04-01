@@ -1,7 +1,6 @@
-
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useState, useEffect } from 'react';
-import {handlePostRefresh} from "../../data/DutTillPayday.ts";
+import {handlePostRefresh} from "../../data/DutTillPayday";
 import { formatDateToMonthYear } from '../../logic/DateFormetting.js';
 
 function BurndownChart() {
