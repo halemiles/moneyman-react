@@ -3,7 +3,9 @@ import Form from 'react-bootstrap/Form';
 
 import Row from 'react-bootstrap/Row';
 import { InputGroup } from "react-bootstrap";
+import Table from 'react-bootstrap/Table';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './Summary.css';
 
 export default function Summary(props) {
 
@@ -45,12 +47,28 @@ export default function Summary(props) {
           <Form.Group controlId="actualValue" as={Row} className="mb-3">
             <InputGroup>
               <InputGroup.Text>Current balance</InputGroup.Text>
-              <Form.Control aria-label="Current balance" type="number" step="1" value={props.currentBalance ?? actual}   onChange={handleActualChange}/>
+              <Form.Control
+                aria-label="Current balance"
+                type="number"
+                step="1"
+                value={props.currentBalance ?? actual}
+                onChange={handleActualChange}
+              />
             </InputGroup>
-        </Form.Group>
+          </Form.Group>
         </Form>
-        <p>Due: {due}</p>
-        <p>Remaining: {remaining}</p>
+        <Table bordered>
+          <tbody>
+            <tr>
+              <td className="text-bold">Due</td>
+              <td>{due}</td>
+            </tr>
+            <tr>
+              <td className="text-bold">Remaining</td>
+              <td>{remaining}</td>
+            </tr>
+          </tbody>
+        </Table>
       </div>
     </div>
   );

@@ -1,0 +1,14 @@
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.summary-table .label {
+  font-weight: bold;
+  text-align: right;
+  padding-right: 10px;
+}
+
+.summary-table .value {
+  text-align: left;
+}

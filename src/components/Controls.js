@@ -45,7 +45,7 @@ export default function Controls(props) {
 
     const generateOnClick = async () => {
         console.log("generateOnClick");
-        const data = await handlePostRefresh(`${process.env.REACT_APP_MONEYMAN_SERVER_URL}/dtp/generate`);
+        const data = await handlePostRefresh(`${process.env.REACT_APP_MONEYMAN_SERVER_URL}/dtp/generate`, props.currentBalance, 0, 'POST');
         console.log('generate data', data);
         if (data) {
             props.sendDataToParent(data.planDates);
