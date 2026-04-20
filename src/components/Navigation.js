@@ -6,12 +6,9 @@ function Navigation() {
         <Navbar>
             <Container>
                 <Navbar.Brand href="#home">Money Manager</Navbar.Brand>
-                <Nav defaultActiveKey="/home" as="ul">
+                <Nav defaultActiveKey="/" as="ul">
                     <Nav.Item as="li">
-                        <Nav.Link href="/home">Home</Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item as="li">
-                        <Nav.Link href="/duetillpayday">Due Till Payday</Nav.Link>
+                        <Nav.Link href="/">Home</Nav.Link>
                     </Nav.Item>
                     <Nav.Item as="li">
                         <Nav.Link href="/transactions">Transactions</Nav.Link>

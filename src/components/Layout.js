@@ -1,7 +1,6 @@
 import React from "react";
 import DueTillPaydayGrid from "./duetillpayday/DueTillPaydayGrid";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import HomeDashboard from './home/HomeDashboard'
 import Transactions from "./transaction/Transactions";
 import AnticipatedTransactions from "./transaction/AnticipatedTransactions";
 import Header from "./Header";
@@ -16,8 +15,8 @@ function Layout() {
       <div className="ui center aligned container">
         <BrowserRouter>
           <Routes>
-            <Route path="/home" element={<HomeDashboard />} />
-            <Route path="/duetillpayday" element={<DueTillPaydayGrid />} />
+            <Route path="/" element={<DueTillPaydayGrid />} />
+            <Route index element={<DueTillPaydayGrid />} />
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/anticipatedtransactions" element={<AnticipatedTransactions />} />
             <Route path="/about" element={<About />} />

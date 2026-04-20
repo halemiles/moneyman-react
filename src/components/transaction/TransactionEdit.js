@@ -101,61 +101,64 @@ function TransactionEdit() {
                 <Row>
                     <Col md={4}> {/* Column 1: Main Fields */}
                         <Row>
-                            <Form.Group as={Col} md="12">
-                                <Form.Label>Id</Form.Label>
-                                <Form.Control
-                                    id="id"
-                                    name="Id"
-                                    type="text"
-                                    placeholder="Id"
-                                    required
-                                    defaultValue={transaction.id}
-                                />
-                            </Form.Group>
-                        </Row>
-                        <Row>
-                            <Form.Group as={Col} md="12">
-                                <Form.Label>Name</Form.Label>
-                                <Form.Control
-                                    id="name"
-                                    name="Name"
-                                    type="text"
-                                    placeholder="Name"
-                                    required
-                                    defaultValue={transaction.name}
-                                />
-                            </Form.Group>
-                        </Row>
-                        <Row>
-                            <Form.Group as={Col} md="12">
-                                <Form.Label>Amount</Form.Label>
-                                <Form.Control
-                                    id="amount"
-                                    name="Amount"
-                                    type="text"
-                                    placeholder="Amount"
-                                    required
-                                    defaultValue={transaction.amount}
-                                />
-                            </Form.Group>
-                        </Row>
-                        <Row>
-                            <Form.Group as={Col} md="12">
-                                <Form.Label>Frequency</Form.Label>
-                                <Form.Control
-                                    as="select"
-                                    id="frequency"
-                                    name="Frequency"
-                                    value={frequency}
-                                    onChange={(e) => setFrequency(parseInt(e.target.value))}
-                                >
-                                    <option value="0">Yearly</option>
-                                    <option value="1">Monthly</option>
-                                    <option value="2">Weekly</option>
-                                    <option value="3">Daily</option>
-                                    <option value="4">Anticipated</option>
-                                </Form.Control>
-                            </Form.Group>
+                                <Form.Group as={Row} className="mb-3">
+                                    <Form.Label column sm={3}>Id</Form.Label>
+                                    <Col sm={9}>
+                                        <Form.Control
+                                            id="id"
+                                            name="Id"
+                                            type="text"
+                                            placeholder="Id"
+                                            required
+                                            defaultValue={transaction.id}
+                                        />
+                                    </Col>
+                                </Form.Group>
+                                <Form.Group as={Row} className="mb-3">
+                                    <Form.Label column sm={3}>Name</Form.Label>
+                                    <Col sm={9}>
+                                        <Form.Control
+                                            id="name"
+                                            name="Name"
+                                            type="text"
+                                            placeholder="Name"
+                                            required
+                                            defaultValue={transaction.name}
+                                        />
+                                    </Col>
+                                </Form.Group>
+
+                                <Form.Group as={Row} className="mb-3">
+                                    <Form.Label column sm={3}>Amount</Form.Label>
+                                    <Col sm={9}>
+                                        <Form.Control
+                                            id="amount"
+                                            name="Amount"
+                                            type="text"
+                                            placeholder="Amount"
+                                            required
+                                            defaultValue={transaction.amount}
+                                        />
+                                    </Col>
+                                </Form.Group>
+                                <Form.Group as={Row} className="mb-3">
+                                    <Form.Label column sm={3}>Frequency</Form.Label>
+                                    <Col sm={9}>
+                                        <Form.Control
+                                            as="select"
+                                            id="frequency"
+                                            name="Frequency"
+                                            value={frequency}
+                                            onChange={(e) => setFrequency(parseInt(e.target.value))}
+                                        >
+                                            <option value="0">Yearly</option>
+                                            <option value="1">Monthly</option>
+                                            <option value="2">Weekly</option>
+                                            <option value="3">Daily</option>
+                                            <option value="4">Anticipated</option>
+                                        </Form.Control>
+                                    </Col>
+                                </Form.Group>
                         </Row>
                         <Row>
                             <Form.Group as={Col} md="12">

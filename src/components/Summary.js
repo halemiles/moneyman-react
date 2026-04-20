@@ -60,32 +60,12 @@ export default function Summary(props) {
         <Table bordered>
           <tbody>
             <tr>
-              <td className="text-bold">Current Balance</td>
-              <td>{props.currentBalance ?? actual}</td>
-            </tr>
-            <tr>
               <td className="text-bold">Due</td>
               <td>{due}</td>
             </tr>
             <tr>
               <td className="text-bold">Remaining</td>
               <td>{remaining}</td>
-            </tr>
-            <tr>
-              <td className="text-bold">Start Date</td>
-              <td>{props.startDate}</td>
-            </tr>
-            <tr>
-              <td className="text-bold">End Date</td>
-              <td>{props.endDate}</td>
-            </tr>
-            <tr>
-              <td className="text-bold">Burn Rate (weekly)</td>
-              <td>£{props.burnPerWeek}</td>
-            </tr>
-            <tr>
-              <td className="text-bold">Burn Rate (daily)</td>
-              <td>£{props.burnPerDay}</td>
             </tr>
           </tbody>
         </Table>
